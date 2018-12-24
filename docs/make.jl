@@ -15,3 +15,12 @@ makedocs(
         "Utilities" => "utilities.md"
     ]
 )
+
+deploydocs(
+    repo = "github.com/Ju-jl/Ju.jl.git",
+    target = "build",
+    julia = "1.0",
+    osname = "linux",
+    deps = nothing,
+    make = nothing,
+)
