@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://en.wikipedia.org/wiki/Xiangqi#Chariot">
-<img src="https://tianjun.me/static/site_resources/img/ju.svg" alt="Ju.svg" title="Ju" width="100"/> 
+<img src="https://raw.githubusercontent.com/Ju-jl/Ju.jl/master/docs/src/assets/logo.png" alt="Ju.svg" title="Ju" width="100"/> 
 </a>
 <blockquote> 
 <p> "If I destroy you, what business is it of yours?"</p>
@@ -8,5 +8,8 @@
 </blockquote>
 </div>
 
+<hr/>
+
 [![BuildStatus](https://travis-ci.org/Ju-jl/Ju.jl.svg?branch=master)](https://travis-ci.org/Ju-jl/Ju.jl)
+[![](https://img.shields.io/docker/pulls/tianjun2018/ju.svg)](https://cloud.docker.com/repository/docker/tianjun2018/ju)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://ju-jl.github.io/Ju.jl/dev/)
