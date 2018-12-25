@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Installation",
     "category": "section",
-    "text": "This package has only been tested on Julia V1.0 and above. To install this package"
+    "text": "This package has only been tested on Julia V1.0 and above. To install this package(v1.0) pkg> add https://github.com/Ju-jl/Ju.jlOr, if you just want to have a try with docker$ docker run -it --rm tianjun2018/juThen follow the instructions in the tutorial section."
 },
 
 {
@@ -38,6 +38,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Components",
     "category": "section",
     "text": "Pages = [\"components.md\"]"
+},
+
+{
+    "location": "#Utilities-1",
+    "page": "Home",
+    "title": "Utilities",
+    "category": "section",
+    "text": "Pages = [\"utilities.md\"]"
 },
 
 {
@@ -853,7 +861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Utilities",
     "title": "Utilities",
     "category": "section",
-    "text": ""
+    "text": "Pages = [\"utilities.md\"]"
 },
 
 {
@@ -1105,6 +1113,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "utilities/#Ju.CircularArrayBuffer",
+    "page": "Utilities",
+    "title": "Ju.CircularArrayBuffer",
+    "category": "type",
+    "text": "CircularArrayBuffer{E, T, N}\n\nUsing a N dimension Array to simulate a circular buffer of N-1 dimensional elements. Here E is the type of element and T is same with the eltype of E. Call eltype(b::CircularArrayBuffer{E,T,N}) will return E.\n\nExamples\n\njulia> b = CircularArrayBuffer{Float64}(2)\n0-element CircularArrayBuffer{Float64,Float64,1}\n\njulia> push!(b, rand())\n1-element CircularArrayBuffer{Float64,Float64,1}:\n 0.9709012378596478\n\njulia> push!(b, rand())\n2-element CircularArrayBuffer{Float64,Float64,1}:\n 0.9709012378596478\n 0.4510778027035365\n\njulia> push!(b, rand())\n2-element CircularArrayBuffer{Float64,Float64,1}:\n 0.4510778027035365\n 0.6774251288208646\n\njulia> b = CircularArrayBuffer{Array{Float64,2}}(3, (3,3))\n3×3×0 CircularArrayBuffer{Array{Float64,2},Float64,3}\n\njulia> push!(b, randn(3,3))\n3×3×1 CircularArrayBuffer{Array{Float64,2},Float64,3}:\n[:, :, 1] =\n -0.548592   0.926179  -1.40998\n -0.0888621  0.177208   0.342665\n  0.0925987  1.18531    0.962738\n\n\n\n\n\n"
+},
+
+{
     "location": "utilities/#Ju.Tiling",
     "page": "Utilities",
     "title": "Ju.Tiling",
@@ -1117,7 +1133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Utilities",
     "title": "Others",
     "category": "section",
-    "text": "Tiling"
+    "text": "CircularArrayBuffer\nTiling"
 },
 
 ]}
