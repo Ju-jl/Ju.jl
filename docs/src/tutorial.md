@@ -30,7 +30,7 @@ Some of the key concepts of an agent are that:
 
 - **Experience Buffer** (or **Trajectories**)
 
-    Buffer is used to store the agent’s experiences, including states, actions, rewards and/or some extra_info.
+    Buffer is used to store the agent’s experiences, including states, actions, rewards and/or some other environment information.
 
 # Solving a Simple Random Walk Problem
 
@@ -54,7 +54,7 @@ julia> env = SimpleRandomWalkEnv()
 SimpleRandomWalkEnv(7, 3, 3, [-1, 1])
 
 julia> env(sample(actionspace(env)))
-(observation = 2, reward = 0.0, isdone = false, extra_info = ())
+(observation = 2, reward = 0.0, isdone = false)
 
 julia> reset!(env)
 (observation = 3, isdone = false)
