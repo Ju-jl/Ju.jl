@@ -11,7 +11,7 @@ julia> env = SimpleRandomWalkEnv()
 SimpleRandomWalkEnv(7, 3, 3, [-1, 1])
 
 julia> env(1)
-(observation = 2, reward = 0.0, isdone = false, extra_info = ())
+(observation = 2, reward = 0.0, isdone = false)
 
 julia> reset!(env)
 (observation = 3, isdone = false)
@@ -29,8 +29,7 @@ function (env::SimpleRandomWalkEnv)(a::Int)
     env.state = min(max(env.state + env.actions[a], 1), env.N)
     (observation = env.state,
      reward      = env.state == env.N ? 3.0 : (env.state == 1 ? 1. : 0.),
-     isdone      = env.state == env.N || env.state == 1,
-     extra_info  = ())
+     isdone      = env.state == env.N || env.state == 1)
 end
 
 function reset!(env::SimpleRandomWalkEnv)

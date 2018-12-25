@@ -10,7 +10,7 @@ Return a function, which will return false after been called `n` times.
 """
 function stop_at_step(n::Int, is_show_progress::Bool=true)
     i, p = 0, Progress(n)
-    function f(agent::AbstractAgent, extra_info)
+    function f(env, agent)
         i += 1
         is_show_progress && next!(p; showvalues = [(:step, i)])
         i ≥ n
@@ -25,7 +25,7 @@ Return a function, which will return false after `n` episodes.
 """
 function stop_at_episode(n::Int, is_show_progress::Bool=true)
     i, p = 0, Progress(n)
-    function f(agent::AbstractAgent, extra_info)
+    function f(env, agent)
         if agent.buffer.isdone[end]
             i += 1
             is_show_progress && next!(p; showvalues = [(:episode, i)])
@@ -37,7 +37,7 @@ function stop_at_episode(n::Int, is_show_progress::Bool=true)
 end
 
 "Return false when encountered an end of an episode"
-function stop_when_done(agent::AbstractAgent, extra_info)
+function stop_when_done(env, agent)
     agent.buffer.isdone[end]
 end
 
@@ -45,7 +45,7 @@ end
 function steps_per_episode()
     steps = []
     count = 0
-    function acc(agent, extra_info)
+    function acc(env, agent)
         count += 1
         if agent.buffer.isdone[end]
             push!(steps, count)
@@ -62,7 +62,7 @@ end
 function rewards_of_each_episode()
     rewards = []
     r = 0.
-    function acc(agent, extra_info)
+    function acc(env, agent)
         r += agent.buffer.reward[end]
         if agent.buffer.isdone[end]
             push!(rewards, r)

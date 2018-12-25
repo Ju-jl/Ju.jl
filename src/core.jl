@@ -15,12 +15,12 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     s, a = observe(env).observation |> agent
     isstop = false
     while !isstop
-        obs, r, d, extra_info = env(a)
+        obs, r, d = env(a)
         ns, na = d ? agent(reset!(env).observation) : agent(obs)
         update!(agent, s, a, r, d, ns, na)
         s, a = ns, na
         for cb in callbacks
-            res = cb(agent, extra_info)
+            res = cb(env, agent)
             if res isa Bool && res
                 isstop = true
             end
@@ -40,11 +40,11 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
         agent = agents[next_role]
 
         s, a = observe(env, agent.role).observation |> agent
-        obs, r, d, extra_info = env(a, agent.role)
+        obs, r, d = env(a, agent.role)
         ns = d ? agent.preprocessor(reset!(env).observation) : agent.preprocessor(obs)
         update!(agent, s, a, r, d, ns)
         for cb in callbacks
-            res = cb(agent, extra_info)
+            res = cb(env, agent)
             if res isa Bool && res
                 isstop = true
             end
