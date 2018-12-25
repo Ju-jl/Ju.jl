@@ -1,5 +1,9 @@
 # Utilities
 
+```@contents
+Pages = ["utilities.md"]
+```
+
 ## Core
 
 The most widely used functions while solving RL problems are listed below:
@@ -48,5 +52,6 @@ Pages = ["helper_functions.jl"]
 ## Others
 
 ```@docs
+CircularArrayBuffer
 Tiling
 ```

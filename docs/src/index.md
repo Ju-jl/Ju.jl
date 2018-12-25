@@ -16,6 +16,18 @@ This package aims to provide several extensible interfaces and reusable componen
 
 This package has only been tested on Julia V1.0 and above. To install this package
 
+```julia
+(v1.0) pkg> add https://github.com/Ju-jl/Ju.jl
+```
+
+Or, if you just want to have a try with [docker](https://docs.docker.com/install/)
+
+```
+$ docker run -it --rm tianjun2018/ju
+```
+
+Then follow the instructions in the tutorial section.
+
 ## Tutorial
 
 ```@contents
@@ -32,6 +44,12 @@ Pages = ["interfaces.md"]
 
 ```@contents
 Pages = ["components.md"]
+```
+
+## Utilities
+
+```@contents
+Pages = ["utilities.md"]
 ```
 
 ## What's Next?
