@@ -16,7 +16,12 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     isstop = false
     while !isstop
         obs, r, d = env(a)
-        ns, na = d ? agent(reset!(env).observation) : agent(obs)
+        if d
+            reset!(env)
+            ns, na = agent(observe(env).observation)
+        else
+            ns, na = agent(obs)
+        end
         push!(buffer(agent), s, a, r, d, ns, na)
         update!(agent)
         s, a = ns, na
