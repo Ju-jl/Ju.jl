@@ -17,7 +17,8 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     while !isstop
         obs, r, d = env(a)
         ns, na = d ? agent(reset!(env).observation) : agent(obs)
-        update!(agent, s, a, r, d, ns, na)
+        push!(buffer(agent), s, a, r, d, ns, na)
+        update!(agent)
         s, a = ns, na
         for cb in callbacks
             res = cb(env, agent)
@@ -32,19 +33,35 @@ end
 function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
                 agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};
                 callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N
-    agents = Dict((agent.role, agent) for agent in agents)
+    named_agents = Dict((agent.role, agent) for agent in agents)
     isstop = false
     while !isstop
-        next_role = get_next_role(env)
-        next_role == nothing && break
-        agent = agents[next_role]
+        for agent in agents
+            obs, isdone = observe(env, agent.role)
+            if isdone
+                continue
+            else
+                s, a = agent(obs)
+                obs, r, d = env(a, agent.role)
+                ns = agent.preprocessor(obs)
+                push!(buffer(agent), s, a, r, d, ns)
+            end
+        end
+        # update isdone and reward info after a round
+        isdone_info, reward_info = observe(env)  # observe env in the system's view
+        for (role, isdone) in isdone_info
+            buffer(named_agents[role]).isdone[end] = isdone
+        end
+        for (role, reward) in reward_info
+            buffer(named_agents[role]).reward[end] = reward
+        end
 
-        s, a = observe(env, agent.role).observation |> agent
-        obs, r, d = env(a, agent.role)
-        ns = d ? agent.preprocessor(reset!(env).observation) : agent.preprocessor(obs)
-        update!(agent, s, a, r, d, ns)
+        for agent in agents
+            update!(agent)
+        end
+
         for cb in callbacks
-            res = cb(env, agent)
+            res = cb(env, named_agents)
             if res isa Bool && res
                 isstop = true
             end

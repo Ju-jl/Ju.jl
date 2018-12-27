@@ -42,8 +42,7 @@ Given a turn info `s`tate, `a`ction, `r`eward, is`d`one, `n`ext`s`tate,
 (usually produced in **Asynchronize Environments**)
 then update the `agent.buffer` and `agent.learner`.
 """
-function update!(agent::Agent, s, a, r, d, ns)
-    push!(agent.buffer, s, a, r, d, ns)
+function update!(agent::Agent)
     update!(agent.learner, agent.buffer)
 end
 

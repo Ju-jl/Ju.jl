@@ -26,8 +26,7 @@ struct DynaAgent{Tl<:AbstractLearner,
     end
 end
 
-function update!(agent::DynaAgent, s, a, r, d, ns, na)
-    push!(agent.buffer, s, a, r, d, ns, na)
+function update!(agent::DynaAgent)
     update!(agent.learner, agent.buffer)  # direct RL
     update!(agent.model, agent.buffer, agent.learner)  # model learning
     plan!(agent.learner, agent.model, agent.nsteps)  # planning
