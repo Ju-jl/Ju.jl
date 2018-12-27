@@ -6,6 +6,7 @@ is_concrete_type_of(t) = x -> x isa Type && x <: t && !isabstracttype(x)
 makedocs(
     sitename = "Ju.jl",
     format = Documenter.HTML(),
+    assets = ["assets/favicon.ico"],
     modules = [Ju],
     pages = [
         "Home" => "index.md",

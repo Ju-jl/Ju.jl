@@ -18,6 +18,17 @@ end
 
 capacity(b::EpisodeTurnBuffer) = isfull(b) ? length(b) : typemax(Int)
 
+"""
+    push!(b::EpisodeTurnBuffer, field::Symbole, value)
+
+!!! warning
+    `b` will be emptied first if last turn is the end of an episode(`isfull(b) == true`).
+"""
+function push!(b::EpisodeTurnBuffer, field::Symbole, value)
+    isfull(b) && empty!(b)
+    push!(getproperty(b, field), value)  # getproperty, not getfield
+end
+
 ##############################
 # EpisodeSARDBuffer
 ##############################

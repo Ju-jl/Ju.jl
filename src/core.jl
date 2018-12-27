@@ -30,34 +30,48 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     callbacks
 end
 
+"""
+    train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
+           agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};
+           callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N
+
+TODO: Add an `AgentManager` struct to better organize `agents`.
+
+For sync environments of mulit-agents, it becomes much more complicated compared to the single agent environments.
+Here is an implementation for one of the most common cases. Each agent take an action alternately.
+In every step, all agents may observe partial/complete information of the environment from their own perspective.
+
+You may consider to overwrite this function according to the problem you want to solve.
+"""
 function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
                 agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};
                 callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N
     named_agents = Dict((agent.role, agent) for agent in agents)
     isstop = false
     while !isstop
-        for agent in agents
-            obs, isdone = observe(env, agent.role)
-            if isdone
-                continue
-            else
-                s, a = agent(obs)
-                obs, r, d = env(a, agent.role)
-                ns = agent.preprocessor(obs)
-                push!(buffer(agent), s, a, r, d, ns)
-            end
-        end
-        # update isdone and reward info after a round
-        isdone_info, reward_info = observe(env)  # observe env in the system's view
-        for (role, isdone) in isdone_info
-            buffer(named_agents[role]).isdone[end] = isdone
-        end
-        for (role, reward) in reward_info
-            buffer(named_agents[role]).reward[end] = reward
+        next_role = get_next_role(env)
+        if next_role == nothing
+            reset!(env)
+            continue
         end
 
         for agent in agents
-            update!(agent)
+            obs = observe(env, agent.role).observation
+            if agent.role == next_role
+                s, a = agent(obs)
+            else
+                push!(buffer(agent), :state, agent.preprocessor(obs))
+                push!(buffer(agent), :action, nothing)
+            end
+        end
+
+        env(a, next_role)  # now take action
+
+        for agent in agents
+            obs, isdone, reward = observe(env, agent.role)
+            push!(buffer(agent), :nextstate, agent.preprocessor(obs))
+            push!(buffer(agent), :reward, reward)
+            push!(buffer(agent), :isdone, isdone)
         end
 
         for cb in callbacks
