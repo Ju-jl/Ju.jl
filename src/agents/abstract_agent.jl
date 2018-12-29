@@ -1,5 +1,5 @@
 export AbstractAgent,
-       update!
+       update!, buffer, learner
 
 import DataStructures:update!
 
@@ -17,6 +17,7 @@ Usually, an agent needs to contain at least an [`AbstractLearner`](@ref) and an 
 abstract type AbstractAgent end
 
 function update! end
-function buffertype(agent::AbstractAgent) 
-    typeof(agent.buffer)
-end
+buffertype(agent::AbstractAgent) = typeof(agent.buffer)
+
+buffer(agent::AbstractAgent) = agent.buffer
+learner(agent::AbstractAgent) = agent.learner

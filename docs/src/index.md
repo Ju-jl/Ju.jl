@@ -52,6 +52,8 @@ Pages = ["components.md"]
 Pages = ["utilities.md"]
 ```
 
+## Related Packages
+
 ## What's Next?
 
 1. Take a look at the Julia code for *Reinforcement Learning An Introduction(2nd)*.

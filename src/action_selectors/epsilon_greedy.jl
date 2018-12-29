@@ -19,7 +19,7 @@ Dict{Any,Int64} with 4 entries:
   1 => 26
 ```
 """
-struct EpsilonGreedySelector <: AbstractActionSelector
+mutable struct EpsilonGreedySelector <: AbstractActionSelector
     ϵ::Float64
 end
 

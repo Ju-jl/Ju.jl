@@ -59,14 +59,18 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
             reset!(env)
             continue
         end
+        
+        a = nothing
 
         for agent in agents
             obs = observe(env, agent.role).observation
             if agent.role == next_role
                 s, a = agent(obs)
+                push!(buffer(agent), :state, s)
+                push!(buffer(agent), :action, a)
             else
                 push!(buffer(agent), :state, agent.preprocessor(obs))
-                push!(buffer(agent), :action, nothing)
+                push!(buffer(agent), :action, get_idle_action(env))
             end
         end
 
@@ -77,6 +81,7 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
             push!(buffer(agent), :nextstate, agent.preprocessor(obs))
             push!(buffer(agent), :reward, reward)
             push!(buffer(agent), :isdone, isdone)
+            update!(agent)
         end
 
         for cb in callbacks
