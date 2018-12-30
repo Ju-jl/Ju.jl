@@ -18,17 +18,6 @@ end
 
 capacity(b::EpisodeTurnBuffer) = isfull(b) ? length(b) : typemax(Int)
 
-"""
-    push!(b::EpisodeTurnBuffer, field::Symbol, value)
-
-!!! warning
-    `b` will be emptied first if last turn is the end of an episode(`isfull(b) == true`).
-"""
-function push!(b::EpisodeTurnBuffer, field::Symbol, value)
-    isfull(b) && empty!(b)
-    push!(getproperty(b, field), value)  # getproperty, not getfield
-end
-
 ##############################
 # EpisodeSARDBuffer
 ##############################
@@ -42,6 +31,27 @@ function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta,
         push!(b.state, s)
         push!(b.action, a)
     elseif isfull(b)
+        empty!(b)
+        push!(b.state, s)
+        push!(b.action, a)
+    end
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
+end
+
+"only valid when buffer is empty"
+function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta) where {Ts, Ta}
+    if isempty(b)
+        push!(b.state, s)
+        push!(b.action, a)
+    end
+end
+
+function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
+    if isfull(b)
+        s, a = b.state[end], b.action[end]
         empty!(b)
         push!(b.state, s)
         push!(b.action, a)
