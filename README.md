@@ -12,6 +12,6 @@
 
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://ju-jl.github.io/Ju.jl/dev/)
 [![BuildStatus](https://travis-ci.org/Ju-jl/Ju.jl.svg?branch=master)](https://travis-ci.org/Ju-jl/Ju.jl)
-[![](https://img.shields.io/docker/pulls/tianjun2018/ju.svg)](https://cloud.docker.com/repository/docker/tianjun2018/ju)
+[![](https://img.shields.io/docker/pulls/tianjun2018/ju.svg)](https://hub.docker.com/r/tianjun2018/ju)
 [![Coverage Status](https://coveralls.io/repos/github/Ju-jl/Ju.jl/badge.svg)](https://coveralls.io/github/Ju-jl/Ju.jl)
 [![](https://codecov.io/gh/Ju-jl/Ju.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/Ju-jl/Ju.jl)
