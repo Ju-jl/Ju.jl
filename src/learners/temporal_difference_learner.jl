@@ -192,7 +192,7 @@ function update!(learner::OffPolicyTDLearner{<:AbstractApproximator, <:AbstractP
 end
 
 function update!(learner::QLearner, s, a, r, d, s′)
-    Q, γ, α, π = learner.Q, learner.γ, learner.α, learner.π_target
+    Q, γ, α, π = learner.approximator, learner.γ, learner.α, learner.π_target
     error = d ? α * (r - Q(s, a)) : α * (r + γ * Q(s′, Val(:max)) - Q(s, a))
     update!(Q, s, a, error)
     update!(π, s, Q(s, Val(:argmax)))
@@ -201,6 +201,10 @@ end
 function update!(learner::QLearner, buffer::EpisodeSARDBuffer)
     s, a, r, d, s′ = buffer.state[end-1], buffer.action[end-1], buffer.reward[end], buffer.isdone[end], buffer.state[end]
     update!(learner, s, a, r, d, s′)
+end
+
+function update!(learner::QLearner, buffer::EpisodeSARDSBuffer)
+    update!(learner, buffer.state[end], buffer.action[end], buffer.reward[end], buffer.isdone[end], buffer.nextstate[end])
 end
 
 function update!(learner::OffPolicyTDLearner{<:AbstractQApproximator, <:AbstractPolicy,  <:AbstractPolicy, :SARSA_ImportanceSampling}, states, actions, rewards, nextstates, nextactions, ::Val{true})

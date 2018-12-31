@@ -26,7 +26,7 @@ Return a function, which will return false after `n` episodes.
 function stop_at_episode(n::Int, is_show_progress::Bool=true)
     i, p = 0, Progress(n)
     function f(env, agent)
-        if agent.buffer.isdone[end]
+        if isend(env)
             i += 1
             is_show_progress && next!(p; showvalues = [(:episode, i)])
             i ≥ n
@@ -37,9 +37,7 @@ function stop_at_episode(n::Int, is_show_progress::Bool=true)
 end
 
 "Return false when encountered an end of an episode"
-function stop_when_done(env, agent)
-    agent.buffer.isdone[end]
-end
+stop_when_done(env, agent) = isend(env)
 
 "A callback(closure) which will record the length of each episode"
 function steps_per_episode()
@@ -47,7 +45,7 @@ function steps_per_episode()
     count = 0
     function acc(env, agent)
         count += 1
-        if agent.buffer.isdone[end]
+        if isend(env)
             push!(steps, count)
             count = 0
         end
@@ -58,13 +56,16 @@ function steps_per_episode()
 end
 
 
-"A callback(closure) which will record the total reward of each episode"
+"""
+A callback(closure) which will record the total reward of each episode.
+Only support single agent yet.
+"""
 function rewards_of_each_episode()
     rewards = []
     r = 0.
     function acc(env, agent)
         r += agent.buffer.reward[end]
-        if agent.buffer.isdone[end]
+        if isend(env)
             push!(rewards, r)
             r = 0.
         end

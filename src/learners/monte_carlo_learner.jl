@@ -1,11 +1,12 @@
 using StatsBase:mean
+const PolicyOrSelector = Union{AbstractPolicy, AbstractActionSelector}
 
 """
     MonteCarloLearner(approximator::Tapp, π::Tp, γ::Float64=1., α::Float64 = 1.0, first_visit::Bool = true) where {Tapp,Tp} 
 
 See more details at Section (5.1) on Page 92 of the book *Sutton, Richard S., and Andrew G. Barto. Reinforcement learning: An introduction. MIT press, 2018.*
 """
-struct MonteCarloLearner{visit,Tapp <: AbstractApproximator,Tp <: AbstractPolicy,Tr <: Function} <: AbstractMonteCarloLearner
+struct MonteCarloLearner{visit,Tapp <: AbstractApproximator,Tp <:PolicyOrSelector,Tr <: Function} <: AbstractMonteCarloLearner
     approximator::Tapp
     π::Tp
     γ::Float64
@@ -21,32 +22,49 @@ struct MonteCarloLearner{visit,Tapp <: AbstractApproximator,Tp <: AbstractPolicy
     end
 end
 
-(learner::MonteCarloLearner)(s) = learner.π(s)
+(learner::MonteCarloLearner{Tvisit, <:AbstractQApproximator, <:AbstractActionSelector})(s) where Tvisit = learner.approximator(s) |> learner.π
+(learner::MonteCarloLearner{Tvisit, <:AbstractApproximator, <:AbstractPolicy})(s) where Tvisit = learner.π(s)
+(learner::MonteCarloLearner{Tvisit, <:AbstractApproximator, <:AbstractPolicy})(s, ::Val{:dist}) where Tvisit = learner.π(s, Val(:dist))
 
-function update!(learner::MonteCarloLearner{Tvisit,<:AbstractVApproximator}, buffer::EpisodeSARDBuffer) where Tvisit
-    α, γ, V, Returns = learner.α, learner.γ, learner.approximator, learner.returns
-    if isfull(buffer)
-        G, states, rewards = 0, @view(buffer.state[1:end - 1]), buffer.reward
-        for (isfirstvisit, s, r) in Iterators.reverse(zip(IsFirstVisit(states), states, rewards))
+update!(learner::MonteCarloLearner, buffer::EpisodeSARDBuffer) = isfull(buffer) && update!(learner, @view(buffer.state[1:end - 1]), @view(buffer.action[1:end - 1]), buffer.reward)
+update!(learner::MonteCarloLearner, buffer::EpisodeSARDSBuffer) = isfull(buffer) && update!(learner, buffer.state, buffer.action, buffer.reward)
+update!(learner::MonteCarloLearner{Tvisit,<:AbstractVApproximator}, states, actions, rewards) where Tvisit = update!(learner, states, rewards)
+
+function update!(learner::MonteCarloLearner{:FirstVisit,<:AbstractVApproximator}, states, rewards)
+    α, γ, V, Returns, G = learner.α, learner.γ, learner.approximator, learner.returns, 0.
+    for (isfirstvisit, s, r) in Iterators.reverse(zip(IsFirstVisit(states), states, rewards))
+        if isfirstvisit
             G = γ * G + r
-            if Tvisit == :EveryVisit || (Tvisit == :FirstVisit && isfirstvisit)
-                update!(V, s, α * (Returns(s, G) - V(s)))
-            end
+            update!(V, s, α * (Returns(s, G) - V(s)))
         end
     end
 end
 
-function update!(learner::MonteCarloLearner{Tvisit,<:AbstractQApproximator}, buffer::EpisodeSARDBuffer) where Tvisit
-    α, γ, Q, π, Returns = learner.α, learner.γ, learner.approximator, learner.π, learner.returns
-    if isfull(buffer)
-        G, states_actions, rewards = 0, zip(@view(buffer.state[1:end - 1]), @view(buffer.action[1:end - 1])), buffer.reward
-        for (isfirstvisit, (s, a), r) in Iterators.reverse(zip(IsFirstVisit(states_actions), states_actions, rewards))
-            G = γ * G + r
-            if Tvisit == :EveryVisit || (Tvisit == :FirstVisit && isfirstvisit)
-                update!(Q, s, a, α * (Returns((s, a), G) - Q(s, a)))
-                update!(π, s, Q(s, Val(:argmax)))
-            end
+function update!(learner::MonteCarloLearner{:EveryVisit,<:AbstractVApproximator}, states, rewards)
+    α, γ, V, Returns, G = learner.α, learner.γ, learner.approximator, learner.returns, 0.
+    for (s, r) in Iterators.reverse(zip(states, rewards))
+        G = γ * G + r
+        update!(V, s, α * (Returns(s, G) - V(s)))
+    end
+end
+
+function update!(learner::MonteCarloLearner{:FirstVisit,<:AbstractQApproximator}, states, actions, rewards)
+    α, γ, Q, π, Returns, G = learner.α, learner.γ, learner.approximator, learner.π, learner.returns, 0.
+    for (isfirstvisit, s, a, r) in Iterators.reverse(zip(IsFirstVisit(states), states, actions, rewards))
+        G = γ * G + r
+        if isfirstvisit
+            update!(Q, s, a, α * (Returns((s, a), G) - Q(s, a)))
+            update!(π, s, Q(s, Val(:argmax)))
         end
+    end
+end
+
+function update!(learner::MonteCarloLearner{:EveryVisit, <:AbstractQApproximator}, states, actions, rewards)
+    α, γ, Q, π, Returns, G = learner.α, learner.γ, learner.approximator, learner.π, learner.returns, 0.
+    for (s, a, r) in Iterators.reverse(zip(states, actions, rewards))
+        G = γ * G + r
+        update!(Q, s, a, α * (Returns((s, a), G) - Q(s, a)))
+        update!(π, s, Q(s, Val(:argmax)))
     end
 end
 

@@ -19,7 +19,7 @@ Dict{Any,Int64} with 4 entries:
   1 => 26
 ```
 """
-struct EpsilonGreedySelector <: AbstractActionSelector
+mutable struct EpsilonGreedySelector <: AbstractActionSelector
     ϵ::Float64
 end
 
@@ -34,4 +34,4 @@ end
     `NaN` will be filtered unless all the values are `NaN`.
     In that case, a random one will be returned.
 """
-(p::EpsilonGreedySelector)(values::AbstractArray)  = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))
+(p::EpsilonGreedySelector)(values)  = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))

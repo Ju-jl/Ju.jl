@@ -41,6 +41,27 @@ function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta,
     push!(b.action, na)
 end
 
+"only valid when buffer is empty"
+function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta) where {Ts, Ta}
+    if isempty(b)
+        push!(b.state, s)
+        push!(b.action, a)
+    end
+end
+
+function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
+    if isfull(b)
+        s, a = b.state[end], b.action[end]
+        empty!(b)
+        push!(b.state, s)
+        push!(b.action, a)
+    end
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
+end
+
 length(b::EpisodeSARDBuffer) = length(b.isdone)
 isfull(b::EpisodeSARDBuffer) = length(b.isdone) > 0 && b.isdone[end]
 

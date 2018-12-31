@@ -1,5 +1,5 @@
 export AbstractEnvironment, AbstractSyncEnvironment, AbstractAsyncEnvironment,
-       reset!, observe, render, actionspace, observationspace, get_next_role
+       reset!, observe, render, actionspace, observationspace, get_next_role, isend, get_idle_action
 
 import DataStructures:reset!
 
@@ -26,10 +26,12 @@ The `Sync` means that the environment will hang up and wait for the agent's inpu
 | `env(action)` | Each environment `env` must be a functional object that receive an action as input and return a `NamedTuple{(:observation, :reward, :isdone)}`|
 | `observe(env)` | Return a `NamedTuple{(:observation, :isdone)}`|
 | `reset!(env)` | Reset the environment and return a `NamedTuple{(:observation, :isdone)}`|
+| `get_next_role(env)` | Required for multi-agent environments (`N > 1`). Tell the system which agent to act next |
 | **Optional Methods** | |
 | `observationspace(env)` | Return the observation space of the environment. See also: [`AbstractSpace`](@ref) |
 | `actionspace(env)` | Return the action space of the environment.  See also: [`AbstractSpace`](@ref) |
 | `render(env)` | Render the environment |
+| `isend(env)` | Check whether the `env` reached an end or not. For single agent environment, `observe(env).isdone` is returned. For multi-agents environment, `get_next_role(env) == nothing` is returned |
 
 """
 abstract type AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N} end
@@ -57,4 +59,23 @@ function actionspace end
 "Render an environment"
 function render end
 
-get_next_role(::AbstractEnvironment{Tos, Tas, 1}) where {Tos, Tas} = :anonymous
+"""
+Get the next role to act. Usually used in [`AbstractSyncEnvironment`](@ref).
+Either return a role of `Symbol` or `nothing`(which means the end of the game)
+"""
+get_next_role(::AbstractSyncEnvironment{Tos, Tas, 1}) where {Tos, Tas} = :anonymous
+
+"""
+Get the default action for [`AbstractSyncEnvironment`](@ref)
+(This interface is experimental)
+TODO: Add explaination of why we need it here
+"""
+function get_idle_action(::AbstractEnvironment) error("unimplemented") end
+
+"""
+    isend(env::AbstractEnvironment)
+
+Check whether the `env` has reached an end of episode.
+"""
+isend(env::AbstractSyncEnvironment{Tos, Tas, 1}) where {Tos, Tas} = observe(env).isdone
+isend(env::AbstractSyncEnvironment{Tos, Tas, N}) where {Tos, Tas, N} = get_next_role(env) == nothing

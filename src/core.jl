@@ -16,8 +16,14 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     isstop = false
     while !isstop
         obs, r, d = env(a)
-        ns, na = d ? agent(reset!(env).observation) : agent(obs)
-        update!(agent, s, a, r, d, ns, na)
+        if d
+            reset!(env)
+            ns, na = agent(observe(env).observation)
+        else
+            ns, na = agent(obs)
+        end
+        push!(buffer(agent), s, a, r, d, ns, na)
+        update!(agent)
         s, a = ns, na
         for cb in callbacks
             res = cb(env, agent)
@@ -29,22 +35,71 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     callbacks
 end
 
+"""
+    train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
+           agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};
+           callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N
+
+TODO: Add an `AgentManager` struct to better organize `agents`.
+
+For sync environments of mulit-agents, it becomes much more complicated compared to the single agent environments.
+Here is an implementation for one of the most common cases. Each agent take an action alternately.
+In every step, all agents may observe partial/complete information of the environment from their own perspective.
+
+You may consider to overwrite this function according to the problem you want to solve.
+"""
 function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
-                agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};
+                agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDBuffer}, N}};
                 callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N
-    agents = Dict((agent.role, agent) for agent in agents)
+    named_agents = Dict((agent.role, agent) for agent in agents)
+
+    a = nothing
+    next_role = get_next_role(env)
+
+    for agent in agents
+        obs = observe(env, agent.role).observation
+        if agent.role == next_role
+            s, a = agent(obs)
+            push!(buffer(agent), s, a)
+        else
+            push!(buffer(agent), agent.preprocessor(obs), get_idle_action(env))
+        end
+    end
+
     isstop = false
     while !isstop
         next_role = get_next_role(env)
-        next_role == nothing && break
-        agent = agents[next_role]
+        if next_role == nothing
+            reset!(env)
+            next_role = get_next_role(env)
+            for agent in agents
+                empty!(buffer(agent))
+                obs = observe(env, agent.role).observation
+                if agent.role == next_role
+                    s, a = agent(obs)
+                    push!(buffer(agent), s, a)
+                else
+                    push!(buffer(agent), agent.preprocessor(obs), get_idle_action(env))
+                end
+            end
+        end
+        
+        env(a, next_role)  # now take action
+        next_role = get_next_role(env)
 
-        s, a = observe(env, agent.role).observation |> agent
-        obs, r, d = env(a, agent.role)
-        ns = d ? agent.preprocessor(reset!(env).observation) : agent.preprocessor(obs)
-        update!(agent, s, a, r, d, ns)
+        for agent in agents
+            obs, isdone, reward = observe(env, agent.role)
+            if agent.role == next_role
+                s, a = agent(obs)
+                push!(buffer(agent), reward, isdone, s, a)
+            else
+                push!(buffer(agent), reward, isdone, agent.preprocessor(obs), get_idle_action(env))
+            end
+            update!(agent)
+        end
+
         for cb in callbacks
-            res = cb(env, agent)
+            res = cb(env, named_agents)
             if res isa Bool && res
                 isstop = true
             end
