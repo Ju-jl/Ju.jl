@@ -292,7 +292,7 @@ function update!(learner::DoubleLearner{<:OffPolicyTDLearner{<:AbstractQApproxim
 end
 
 """
-    DifferentialTDLearner(approximator::Tapp, π::Tp, α::Float64, β::Float64, R̄::Float64=0., n::Int=1, method::Symbol=:SARSA) where {Tapp<:AbstractApproximator, Tp<:PolicyOrSelector}= new{Tapp, Tp, method}(approximator, π, α, β, R̄, n)
+    DifferentialTDLearner(approximator::Tapp, π::Tp, α::Float64, β::Float64, R̄::Float64=0., n::Int=0, method::Symbol=:SARSA) where {Tapp<:AbstractApproximator, Tp<:PolicyOrSelector}= new{Tapp, Tp, method}(approximator, π, α, β, R̄, n)
 
 See more details at Section (10.3) on Page 251 of the book *Sutton, Richard S., and Andrew G. Barto. Reinforcement learning: An introduction. MIT press, 2018.*
 """
