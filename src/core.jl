@@ -12,19 +12,24 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
                 agent::AbstractAgent,
                 ::Type{<:SARDBuffer};
                 callbacks)
-    s, a = observe(env).observation |> agent
+    obs, d = observe(env)
+    s, a = agent(obs)
+    push!(buffer(agent), s, a)
+
     isstop = false
     while !isstop
-        obs, r, d = env(a)
         if d
             reset!(env)
-            ns, na = agent(observe(env).observation)
-        else
-            ns, na = agent(obs)
+            empty!(buffer(agent))
+            s, a = agent(observe(env).observation)
+            push!(buffer(agent), s, a)
         end
-        push!(buffer(agent), s, a, r, d, ns, na)
+
+        obs, r, d = env(a)  # TODO: split into two steps: 1. env(a), 2. observe(env)
+        s, a = agent(obs)
+        push!(buffer(agent), r, d, s, a)
         update!(agent)
-        s, a = ns, na
+
         for cb in callbacks
             res = cb(env, agent)
             if res isa Bool && res
