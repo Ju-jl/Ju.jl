@@ -178,7 +178,7 @@ QLearner(Q::AbstractQApproximator, π::PolicyOrSelector, γ::Float64, α::Union{
 priority(learner::QLearner{<:AbstractQApproximator, <:AbstractPolicy, <:Float64}, s, a, r, d, s′) = priority(learner, learner.α, s, a, r, d, s′)
 priority(learner::QLearner{<:AbstractQApproximator, <:AbstractPolicy, <:Function}, s, a, r, d, s′) = priority(learner, learner.α((s,a)), s, a, r, d, s′)
 function priority(learner::QLearner, α, s, a, r, d, s′)
-    γ, Q = learner.γ, learner.Q
+    γ, Q = learner.γ, learner.approximator
     error = d ? α * (r - Q(s, a)) : α * (r + γ * Q(s′, Val(:max)) - Q(s, a))
     abs(error)
 end
