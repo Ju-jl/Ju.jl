@@ -49,6 +49,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "#Related-Packages-1",
+    "page": "Home",
+    "title": "Related Packages",
+    "category": "section",
+    "text": ""
+},
+
+{
     "location": "#What\'s-Next?-1",
     "page": "Home",
     "title": "What\'s Next?",
@@ -109,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Interfaces",
     "title": "Ju.AbstractSyncEnvironment",
     "category": "type",
-    "text": "AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N}\n\nSupertype for synchronized environments with the observation space of type Tos and action space of type Tas. Here the N means the number of agents the environment can interact with. The Sync means that the environment will hang up and wait for the agent\'s input.\n\nRequired Methods Brief Description\nenv(action) Each environment env must be a functional object that receive an action as input and return a NamedTuple{(:observation, :reward, :isdone)}\nobserve(env) Return a NamedTuple{(:observation, :isdone)}\nreset!(env) Reset the environment and return a NamedTuple{(:observation, :isdone)}\nOptional Methods \nobservationspace(env) Return the observation space of the environment. See also: AbstractSpace\nactionspace(env) Return the action space of the environment.  See also: AbstractSpace\nrender(env) Render the environment\n\n\n\n\n\n"
+    "text": "AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N}\n\nSupertype for synchronized environments with the observation space of type Tos and action space of type Tas. Here the N means the number of agents the environment can interact with. The Sync means that the environment will hang up and wait for the agent\'s input.\n\nRequired Methods Brief Description\nenv(action) Each environment env must be a functional object that receive an action as input and return a NamedTuple{(:observation, :reward, :isdone)}\nobserve(env) Return a NamedTuple{(:observation, :isdone)}\nreset!(env) Reset the environment and return a NamedTuple{(:observation, :isdone)}\nget_next_role(env) Required for multi-agent environments (N > 1). Tell the system which agent to act next\nOptional Methods \nobservationspace(env) Return the observation space of the environment. See also: AbstractSpace\nactionspace(env) Return the action space of the environment.  See also: AbstractSpace\nrender(env) Render the environment\nisend(env) Check whether the env reached an end or not. For single agent environment, observe(env).isdone is returned. For multi-agents environment, get_next_role(env) == nothing is returned\n\n\n\n\n\n"
 },
 
 {
@@ -801,7 +809,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "components/#Ju.EpsilonGreedySelector-Tuple{AbstractArray}",
+    "location": "components/#Ju.EpsilonGreedySelector-Tuple{Any}",
     "page": "Components",
     "title": "Ju.EpsilonGreedySelector",
     "category": "method",
@@ -897,6 +905,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s59,#s60,Tpp} where Tpp<:Function where #s60<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s59<:AbstractLearner,N}}}} where N",
+    "page": "Utilities",
+    "title": "Ju.train!",
+    "category": "method",
+    "text": "train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},\n       agents::Tuple{Vararg{<:Agent{<:AbstractLearner, <:SARDSBuffer}, N}};\n       callbacks::Tuple{Vararg{<:Function}}=(stop_at_step(1),)) where N\n\nTODO: Add an AgentManager struct to better organize agents.\n\nFor sync environments of mulit-agents, it becomes much more complicated compared to the single agent environments. Here is an implementation for one of the most common cases. Each agent take an action alternately. In every step, all agents may observe partial/complete information of the environment from their own perspective.\n\nYou may consider to overwrite this function according to the problem you want to solve.\n\n\n\n\n\n"
+},
+
+{
     "location": "utilities/#Ju.value_iteration!-Tuple{AbstractVApproximator,AbstractDistributionModel}",
     "page": "Utilities",
     "title": "Ju.value_iteration!",
@@ -917,7 +933,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Utilities",
     "title": "Ju.rewards_of_each_episode",
     "category": "method",
-    "text": "A callback(closure) which will record the total reward of each episode\n\n\n\n\n\n"
+    "text": "A callback(closure) which will record the total reward of each episode. Only support single agent yet.\n\n\n\n\n\n"
 },
 
 {
