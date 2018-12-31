@@ -13,8 +13,12 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
                 ::Type{<:SARDBuffer};
                 callbacks)
     obs, d = observe(env)
-    s, a = agent(obs)
-    push!(buffer(agent), s, a)
+    if isempty(buffer(agent))
+        s, a = agent(obs)  # TODO: check buffer first
+        push!(buffer(agent), s, a)
+    else
+        s, a = buffer(agent).state[end], buffer(agent).action[end]
+    end
 
     isstop = false
     while !isstop
