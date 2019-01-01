@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Related Packages",
     "category": "section",
-    "text": ""
+    "text": "ReinforcementLearning.jl\nIn fact, there already exists an awesome Reinforcement Learning package. And I had cooperated with Johanni Brea on it for a short time. He is a very talented guy and I\'m pretty sure that he has the ability to push that package to a much more powerful new stage given more time. However I suspended refactoring that code due to some family issues. Several months later, I gave a sharing to my friends on how I learned Reinforcement Learning. And then I wrote some scripts to reproduce the figures on the book of Reinforcement Learning: An Introduction. One day I thought, \"How about making them more general?\". And then we have this package (and ReinforcementLearningAnIntroduction.jl). You may find that there are a lot of similarities between this package and ReinforcementLearning.jl.\nReinforce.jl\nThis package contains some interesting interfaces and it is also the first package I read while learning Reinforcement Learning in Julia.\nReinforcement Learning Package Design\nChristof Stocker shared his ideas on how to design a Reinforcement Learning package about a year ago. You may also take a look at it."
 },
 
 {
