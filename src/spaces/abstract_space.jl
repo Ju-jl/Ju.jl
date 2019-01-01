@@ -21,7 +21,6 @@ Supertype of different kinds of continuous spaces.
 | `sample(space)` | Get a random sample from the space |
 | `Base.in(space, x)` | Test whether `x` is in the `space` |
 | **Optional Methods** | |
-| `Base.==(spaceX, spaceY)` | Check whether two spaces are the same |
 | `Base.eltype(space)` | Return the type of the sample in a space |
 
 See also: [`AbstractDiscreteSpace`](@ref)
@@ -40,7 +39,6 @@ Supertype of different kinds of discrete spaces.
 | `Base.size(space)` | Return the size of the space in all dimensions |
 | **Optional Methods** | |
 | `Base.length(space)` | Return the number of elements in that space. By default it will be `*(Base.size(space))`. |
-| `Base.==(spaceX, spaceY)` | Check whether two spaces are the same |
 | `Base.eltype(space)` | Return the type of the sample in a space |
 
 See also: [`AbstractContinuousSpace`](@ref)

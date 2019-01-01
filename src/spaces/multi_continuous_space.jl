@@ -19,7 +19,6 @@ struct MultiContinuousSpace{T <: Number,N} <: AbstractContinuousSpace
 end
 
 
-eltype(s::MultiContinuousSpace{T, N}) where {T, N} = Array{T, N}
-==(x::MultiContinuousSpace, y::MultiContinuousSpace) = x.low == y.low && x.high == y.high
+eltype(s::MultiContinuousSpace{T, N}) where {T, N} = Array{T, N}  # TODO: StaticArray
 sample(s::MultiContinuousSpace) = map((l, h) -> l + rand() * (h - l), s.low, s.high)
 in(xs::AbstractArray{T, N} where T, s::MultiContinuousSpace{T, N} where T) where N = all(map((a, b, c) -> a ≤ b ≤ c, s.low, xs, s.high))

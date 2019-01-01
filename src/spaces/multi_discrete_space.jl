@@ -13,6 +13,5 @@ end
 size(s::MultiDiscreteSpace) = Tuple(s.counts)
 eltype(s::MultiDiscreteSpace) = typeof(s.counts)
 sample(s::MultiDiscreteSpace) = map(x -> rand(1:x), s.counts)
-==(x::MultiDiscreteSpace, y::MultiDiscreteSpace) = x.counts == y.counts
 in(xs::Array{Int}, s::MultiDiscreteSpace) = all(map((e, x) -> 1 ≤ x < e + 1 , s.counts, xs))
 in(xs::NTuple{N, Int}, s::MultiDiscreteSpace{N}) where N = all(map((e, x) -> 1 ≤ x < e + 1 , s.counts, xs))

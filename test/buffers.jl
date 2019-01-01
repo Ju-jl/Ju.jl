@@ -8,6 +8,7 @@
         @test eltype(b) == Int
         @test capacity(b) == 3
         @test isfull(b) == false
+        @test isempty(b) == true
         @test length(b) == 0
         @test size(b) == (0,)
         # element must has the exact same length with the element of buffer
@@ -31,6 +32,12 @@
         @test b[1] == 3
         @test b[end] == 5
         @test b[1:end] == [3, 4, 5]
+
+        empty!(b)
+        @test isfull(b) == false
+        @test isempty(b) == true
+        @test length(b) == 0
+        @test size(b) == (0,)
     end
 
     @testset "2D Float64" begin
@@ -75,6 +82,7 @@ end
 
         push!(b, 1, 1, 1., false, 2, 2)
         @test length(b) == 1
+        @test size(b) == (1,)
         @test isfull(b) == false
         @test isempty(b) == false
         
@@ -118,6 +126,26 @@ end
         @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false)
         @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=false)
     end
+    @testset "CircularSARDSBuffer" begin
+        b = CircularSARDSBuffer(3)
+        @test length(b) == 0
+        @test isfull(b) == false
+        @test isempty(b) == true
+        @test capacity(b) == 3
+
+        push!(b, 1, 1, 1.0, false, 2)
+        push!(b, 3, 3, 3.0, false, 4)
+        push!(b, 5, 5, 5.0, false, 6)
+        @test length(b) == 3
+        @test isfull(b) == true
+        @test isempty(b) == false
+        @test b[1] == (state=1, action=1, reward=1.0, isdone=false, nextstate=2)
+        @test b[end] == (state=5, action=5, reward=5.0, isdone=false, nextstate=6)
+
+        push!(b, 7, 7, 7.0, false, 8)
+        @test b[1] == (state=3, action=3, reward=3.0, isdone=false, nextstate=4)
+        @test b[end] == (state=7, action=7, reward=7.0, isdone=false, nextstate=8)
+    end
     @testset "CircularSARDSABuffer" begin
         b = CircularSARDSABuffer(3)
         @test length(b) == 0
@@ -148,12 +176,15 @@ end
         @test isempty(b) == true
         @test capacity(b) == typemax(Int)
 
-        push!(b, 1, 1, 1., false, 2, 2)
+        push!(b, 1, 1)
+        push!(b, 1., false, 2, 2)
         @test length(b) == 1
         @test isfull(b) == false
         @test isempty(b) == false
 
-        push!(b, 2, 2, 2., true, 3, 3)
+        # we can also push a turn infor together, 
+        # notice that state and action will be iginored
+        push!(b, 2, 2, 2., true, 3, 3)  
         @test length(b) == 2
         @test isfull(b) == true
         @test isempty(b) == false
@@ -164,6 +195,32 @@ end
         @test isfull(b) == false
         @test isempty(b) == false
         @test b[end] == (state=3, action=3, reward=3., isdone=false)
+    end
+    @testset "EpisodeSARDSBuffer" begin
+        b = EpisodeSARDSBuffer()
+        @test length(b) == 0
+        @test isfull(b) == false
+        @test isempty(b) == true
+
+        push!(b, 1, 1, 1.0, false, 2)
+        push!(b, 3, 3, 3.0, false, 4)
+        push!(b, 5, 5, 5.0, false, 6)
+        @test length(b) == 3
+        @test isfull(b) == false
+        @test isempty(b) == false
+        @test b[1] == (state=1, action=1, reward=1.0, isdone=false, nextstate=2)
+        @test b[end] == (state=5, action=5, reward=5.0, isdone=false, nextstate=6)
+
+        push!(b, 7, 7, 7.0, true, 8)
+        @test length(b) == 4
+        @test isfull(b) == true
+        @test b[1] == (state=1, action=1, reward=1.0, isdone=false, nextstate=2)
+        @test b[end] == (state=7, action=7, reward=7.0, isdone=true, nextstate=8)
+
+        push!(b, 9, 9, 9.0, false, 10)
+        @test length(b) == 1
+        @test isfull(b) == false
+        @test b[1] == b[end] == (state=9, action=9, reward=9.0, isdone=false, nextstate=10)
     end
     @testset "EpisodeSARDSABuffer" begin
         b = EpisodeSARDSABuffer()
