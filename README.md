@@ -10,6 +10,7 @@
 
 <hr/>
 
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://ju-jl.github.io/Ju.jl/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://ju-jl.github.io/Ju.jl/dev/)
 [![BuildStatus](https://travis-ci.org/Ju-jl/Ju.jl.svg?branch=master)](https://travis-ci.org/Ju-jl/Ju.jl)
 [![](https://img.shields.io/docker/pulls/tianjun2018/ju.svg)](https://hub.docker.com/r/tianjun2018/ju)
