@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Interfaces",
     "title": "Ju.AbstractContinuousSpace",
     "category": "type",
-    "text": "AbstractContinuousSpace <: AbstractSpace\n\nSupertype of different kinds of continuous spaces.\n\nRequired Methods Brief Description\nsample(space) Get a random sample from the space\nBase.in(space, x) Test whether x is in the space\nOptional Methods \nBase.==(spaceX, spaceY) Check whether two spaces are the same\nBase.eltype(space) Return the type of the sample in a space\n\nSee also: AbstractDiscreteSpace\n\n\n\n\n\n"
+    "text": "AbstractContinuousSpace <: AbstractSpace\n\nSupertype of different kinds of continuous spaces.\n\nRequired Methods Brief Description\nsample(space) Get a random sample from the space\nBase.in(space, x) Test whether x is in the space\nOptional Methods \nBase.eltype(space) Return the type of the sample in a space\n\nSee also: AbstractDiscreteSpace\n\n\n\n\n\n"
 },
 
 {
@@ -157,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Interfaces",
     "title": "Ju.AbstractDiscreteSpace",
     "category": "type",
-    "text": "AbstractDiscreteSpace <: AbstractSpace\n\nSupertype of different kinds of discrete spaces.\n\nRequired Methods Brief Description\nsample(space) Get a random sample from the space\nBase.in(space, x) Test whether x is in the space\nBase.size(space) Return the size of the space in all dimensions\nOptional Methods \nBase.length(space) Return the number of elements in that space. By default it will be *(Base.size(space)).\nBase.==(spaceX, spaceY) Check whether two spaces are the same\nBase.eltype(space) Return the type of the sample in a space\n\nSee also: AbstractContinuousSpace\n\n\n\n\n\n"
+    "text": "AbstractDiscreteSpace <: AbstractSpace\n\nSupertype of different kinds of discrete spaces.\n\nRequired Methods Brief Description\nsample(space) Get a random sample from the space\nBase.in(space, x) Test whether x is in the space\nBase.size(space) Return the size of the space in all dimensions\nOptional Methods \nBase.length(space) Return the number of elements in that space. By default it will be *(Base.size(space)).\nBase.eltype(space) Return the type of the sample in a space\n\nSee also: AbstractContinuousSpace\n\n\n\n\n\n"
 },
 
 {
@@ -749,7 +749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Components",
     "title": "Ju.DeterministicPolicy",
     "category": "type",
-    "text": "struct DeterministicPolicy <: AbstractPolicy\n    table::Vector{Int}\n    nactions::Int\nend\n\nThe action to be adopt is stored in table.\n\n\n\n\n\n"
+    "text": "struct DeterministicPolicy <: AbstractPolicy\n    table::Vector{Int}\n    nactions::Int\nend\n\nThe action to be adopted is stored in table.\n\n\n\n\n\n"
 },
 
 {
@@ -757,7 +757,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Components",
     "title": "Ju.EpsilonGreedyPolicy",
     "category": "type",
-    "text": "struct EpsilonGreedyPolicy <: AbstractPolicy\n    table::Vector{Int}\n    nactions::Int\n    ϵ::Float64\nend\n\nThe best actions are stored in the table. However the best action will only be taken at a portion of 1 - ϵ.\n\nSee also: EpsilonGreedySelector\n\n\n\n\n\n"
+    "text": "struct EpsilonGreedyPolicy <: AbstractPolicy\n    table::Vector{Int}\n    nactions::Int\n    ϵ::Float64\nend\n\nJust like the DeterministicPolicy, the best actions are stored in the table. However the best action will only be taken at a portion of 1 - ϵ.\n\nSee also: EpsilonGreedySelector\n\n\n\n\n\n"
+},
+
+{
+    "location": "components/#Ju.FunctionalPolicy",
+    "page": "Components",
+    "title": "Ju.FunctionalPolicy",
+    "category": "type",
+    "text": "This is just a wrapper\n\n\n\n\n\n"
 },
 
 {
@@ -845,7 +853,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Components",
     "title": "Ju.WeightedSample",
     "category": "method",
-    "text": "(p::WeightedSample)(values::AbstractArray)\n\nAction values are normalized to have a sum of 1.0 and then used as the probability to sample a random action.\n\n\n\n\n\n"
+    "text": "(p::WeightedSample)(values::AbstractArray)\n\nnote: Note\nAction values are normalized to have a sum of 1.0 and then used as the probability to sample a random action.\n\n\n\n\n\n"
 },
 
 {
@@ -905,7 +913,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s59,#s60,Tpp} where Tpp<:Function where #s60<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s59<:AbstractLearner,N}}}} where N",
+    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s61,#s62,Tpp} where Tpp<:Function where #s62<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s61<:AbstractLearner,N}}}} where N",
     "page": "Utilities",
     "title": "Ju.train!",
     "category": "method",
@@ -949,7 +957,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Utilities",
     "title": "Ju.stop_at_episode",
     "category": "function",
-    "text": "stop_at_episode(n::Int, is_show_progress::Bool=true)\n\nReturn a function, which will return false after n episodes. is_show_progress will control whether print the progress meter or not.\n\n\n\n\n\n"
+    "text": "stop_at_episode(n::Int, is_show_progress::Bool=true)\n\nReturn a function, which will return false after n episodes. isend(env) is used to check if it is the end of an episode. is_show_progress will control whether print the progress meter or not.\n\n\n\n\n\n"
 },
 
 {
@@ -1089,6 +1097,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "utilities/#Ju.importance_weight-NTuple{4,Any}",
+    "page": "Utilities",
+    "title": "Ju.importance_weight",
+    "category": "method",
+    "text": "importance_weight(π, b, states, actions)\n\nCalculate the importance weight between the target policy π and behavior policy b given states and actions.\n\n\n\n\n\n"
+},
+
+{
     "location": "utilities/#Ju.onehot",
     "page": "Utilities",
     "title": "Ju.onehot",
@@ -1110,14 +1126,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Ju.reverse_importance_weights",
     "category": "method",
     "text": "reverse_importance_weights(π, b, states, actions)\n\nCalculate the importance weight at each time step in the reversed order between the target policy π and behavior policy b given states and actions.\n\nThe returned object is of type Reductions\n\n\n\n\n\n"
-},
-
-{
-    "location": "utilities/#Ju.importance_weight-NTuple{4,Any}",
-    "page": "Utilities",
-    "title": "Ju.importance_weight",
-    "category": "method",
-    "text": "importance_weight(π, b, states, actions)\n\nCalculate the importance weight between the target policy π and behavior policy b given states and actions.\n\n\n\n\n\n"
 },
 
 {
