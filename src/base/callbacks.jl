@@ -15,12 +15,14 @@ function stop_at_step(n::Int, is_show_progress::Bool=true)
         is_show_progress && next!(p; showvalues = [(:step, i)])
         i ≥ n
     end
+    f() = i
 end
 
 """
     stop_at_episode(n::Int, is_show_progress::Bool=true)
 
 Return a function, which will return false after `n` episodes.
+`isend(env)` is used to check if it is the end of an episode.
 `is_show_progress` will control whether print the progress meter or not.
 """
 function stop_at_episode(n::Int, is_show_progress::Bool=true)
@@ -34,6 +36,7 @@ function stop_at_episode(n::Int, is_show_progress::Bool=true)
             false
         end
     end
+    f() = i
 end
 
 "Return false when encountered an end of an episode"
@@ -64,7 +67,7 @@ function rewards_of_each_episode()
     rewards = []
     r = 0.
     function acc(env, agent)
-        r += agent.buffer.reward[end]
+        r += buffer(agent).reward[end]
         if isend(env)
             push!(rewards, r)
             r = 0.
