@@ -1,3 +1,4 @@
+"This is just a wrapper"
 struct FunctionalPolicy{Ta <: Function} <: AbstractPolicy
     action_generator::Ta
 end

@@ -1,6 +1,6 @@
 export findallmax, deletefirst!, onehot,
        discounted_reward, reverse_discounted_rewards,
-       importance_weights, reverse_importance_weights
+       importance_weight, reverse_importance_weights
 
 using SparseArrays
 

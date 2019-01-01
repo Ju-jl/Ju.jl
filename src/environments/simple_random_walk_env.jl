@@ -22,7 +22,7 @@ mutable struct SimpleRandomWalkEnv <: AbstractSyncEnvironment{DiscreteSpace,Disc
     start::Int
     state::Int
     actions::Vector{Int}
-    SimpleRandomWalkEnv(N=7, actions=[-1, 1], start=3) = new(N, start, start, actions)
+    SimpleRandomWalkEnv(;N=7, actions=[-1, 1], start=3) = new(N, start, start, actions)
 end
 
 function (env::SimpleRandomWalkEnv)(a::Int)

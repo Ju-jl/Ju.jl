@@ -6,7 +6,7 @@ using SparseArrays
         nactions::Int
     end
 
-The action to be adopt is stored in `table`.
+The action to be adopted is stored in `table`.
 """
 struct DeterministicPolicy <: AbstractPolicy
     table::Vector{Int}

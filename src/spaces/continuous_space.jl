@@ -12,6 +12,5 @@ struct ContinuousSpace{T<:Number} <: AbstractContinuousSpace
 end
 
 eltype(s::ContinuousSpace{T}) where T = T
-==(x::ContinuousSpace, y::ContinuousSpace) = x.low == y.low && x.high == y.high
 sample(s::ContinuousSpace) = s.low + rand() * (s.high - s.low)
 in(x, s::ContinuousSpace) = s.low ≤ x ≤ s.high

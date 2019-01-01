@@ -1,29 +1,48 @@
 @testset "Space" begin
 
 @testset "ContinuousSpace" begin
-    @test in(0.5, ContinuousSpace(0, 1)) == true
-    @test in(0.0, ContinuousSpace(0, 1)) == true
-    @test in(1.0, ContinuousSpace(0, 1)) == true
-    @test in(-1.0, ContinuousSpace(0, 1)) == false
-    @test in(-Inf, ContinuousSpace(0, 1)) == false
+    s = ContinuousSpace(0., 1.)
+    @test in(0.5, s) == true
+    @test in(0.0, s) == true
+    @test in(1.0, s) == true
+    @test in(-1.0, s) == false
+    @test in(-Inf, s) == false
+
+    @test in(sample(s), s)
+    @test eltype(s) == Float64
 end
 
 @testset "MultiContinuousSpace" begin
-    @test in([0, 0], MultiContinuousSpace([-1, -2], [1, 2])) == true
-    @test in([0, 3], MultiContinuousSpace([-1, -2], [1, 2])) == false
+    s = MultiContinuousSpace([-1., -2.], [1., 2.])
+    @test in([0, 0], s) == true
+    @test in([0, 3], s) == false
+    @test in(sample(s), s)
+    @test eltype(s) == Array{Float64, 1}
 end
 
 @testset "DiscreteSpace" begin
-    @test in(0, DiscreteSpace(10)) == false
-    @test in(1, DiscreteSpace(10)) == true
-    @test in(5, DiscreteSpace(10)) == true
-    @test in(10, DiscreteSpace(10)) == true
+    s = DiscreteSpace(10)
+
+    @test in(0, s) == false
+    @test in(1, s) == true
+    @test in(5, s) == true
+    @test in(10, s) == true
+
+    @test in(sample(s), s)
+    @test size(s) == (10,)
+    @test length(s) == 10
 end
 
 @testset "MultiDiscreteSpace" begin
-    @test in([0,0,0], MultiDiscreteSpace([2,3,2])) == false
-    @test in([1,1,1], MultiDiscreteSpace([2,3,2])) == true
-    @test in([3,3,3], MultiDiscreteSpace([2,3,2])) == false
+    s = MultiDiscreteSpace([2,3,2])
+
+    @test in([0,0,0], s) == false
+    @test in([1,1,1], s) == true
+    @test in([3,3,3], s) == false
+
+    @test size(s) == (2,3,2)
+    @test length(s) == 2*3*2
+    @test in(sample(s), s)
 end
 
 @testset "Space Tuple" begin

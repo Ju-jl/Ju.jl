@@ -5,7 +5,7 @@
         ϵ::Float64
     end
 
-The best actions are stored in the `table`.
+Just like the [`DeterministicPolicy`](@ref), the best actions are stored in the `table`.
 However the best action will only be taken at a portion of 1 - ϵ.
 
 See also: [`EpsilonGreedySelector`](@ref)
