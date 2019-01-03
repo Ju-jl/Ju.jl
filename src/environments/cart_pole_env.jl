@@ -3,7 +3,7 @@ Classic cart-pole system implemented by Rich Sutton et al.
 See the original file at [http://incompleteideas.net/sutton/book/code/pole.c](http://incompleteideas.net/sutton/book/code/pole.c).
 Or the python version at [https://github.com/openai/gym/blob/master/gym/envs/classic_control/cartpole.py](https://github.com/openai/gym/blob/master/gym/envs/classic_control/cartpole.py)
 """
-struct CartPoleEnv
+mutable struct CartPoleEnv <: AbstractSyncEnvironment{MultiContinuousSpace{Float64, 1},DiscreteSpace,1}
     gravity::Float64
     masscart::Float64
     masspole::Float64
@@ -43,18 +43,18 @@ function (env::CartPoleEnv)(a)
     force = a == 2 ? env.force_mag : -env.force_mag
     costheta = cos(theta)
     sintheta = sin(theta)
-    tmp = (force + env.polemass_length * theta_dot * theta_dot * sintheta) / env.totalmass
+    temp = (force + env.polemass_length * theta_dot * theta_dot * sintheta) / env.total_mass
     thetaacc = (env.gravity * sintheta - costheta * temp) / (env.length * (4.0 / 3.0 - env.masspole * costheta * costheta / env.total_mass))
     xacc  = temp - env.polemass_length * thetaacc * costheta / env.total_mass
 
-    env.state[1] += env.params.tau * xdot
-    env.state[2] += env.params.tau * xacc
-    env.state[3] += env.params.tau * thetadot
-    env.state[4] += env.params.tau * thetaacc
+    env.state[1] += env.tau * x_dot
+    env.state[2] += env.tau * xacc
+    env.state[3] += env.tau * theta_dot
+    env.state[4] += env.tau * thetaacc
 
     env.isdone = abs(env.state[1]) > env.x_threshold ||
-                 abs(env.state[3]) > env.theta_threshold ||
-                 env.t >= env.params.maxsteps
+                 abs(env.state[3]) > env.theta_threshold_radians ||
+                 env.t >= env.max_steps
     
     (observation = env.state,
      reward      = 1.0,
@@ -63,7 +63,7 @@ end
 
 function reset!(env::CartPoleEnv)
     env.t = 0
-    env.state .= rand(4) ./ 10 .- 0.05
+    map!(x -> rand() / 10 - 0.05, env.state, env.state)
     env.isdone = false
     (observation = env.state,
      isdone      = env.isdone)
