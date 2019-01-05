@@ -78,7 +78,7 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
     isstop = false
     while !isstop
         next_role = get_next_role(env)
-        if next_role == nothing
+        if next_role === nothing
             reset!(env)
             next_role = get_next_role(env)
             for agent in agents

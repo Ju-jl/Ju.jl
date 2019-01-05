@@ -31,7 +31,7 @@ The `Sync` means that the environment will hang up and wait for the agent's inpu
 | `observationspace(env)` | Return the observation space of the environment. See also: [`AbstractSpace`](@ref) |
 | `actionspace(env)` | Return the action space of the environment.  See also: [`AbstractSpace`](@ref) |
 | `render(env)` | Render the environment |
-| `isend(env)` | Check whether the `env` reached an end or not. For single agent environment, `observe(env).isdone` is returned. For multi-agents environment, `get_next_role(env) == nothing` is returned |
+| `isend(env)` | Check whether the `env` reached an end or not. For single agent environment, `observe(env).isdone` is returned. For multi-agents environment, `get_next_role(env) === nothing` is returned |
 
 """
 abstract type AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N} end
@@ -78,4 +78,4 @@ function get_idle_action(::AbstractEnvironment) error("unimplemented") end
 Check whether the `env` has reached an end of episode.
 """
 isend(env::AbstractSyncEnvironment{Tos, Tas, 1}) where {Tos, Tas} = observe(env).isdone
-isend(env::AbstractSyncEnvironment{Tos, Tas, N}) where {Tos, Tas, N} = get_next_role(env) == nothing
+isend(env::AbstractSyncEnvironment{Tos, Tas, N}) where {Tos, Tas, N} = get_next_role(env) === nothing

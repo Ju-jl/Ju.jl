@@ -64,7 +64,7 @@ See more details at Section (8.2) on Page 170 of the book *Sutton, Richard S., a
 function plan!(learner::QLearner, model::PrioritizedSweepingSampleModel, nsteps::Int)
     for _ in 1:nsteps
         record = sample(model)
-        record == nothing && continue
+        record === nothing && continue
         s, a, r, d, s′ = record
         update!(learner, s, a, r, d, s′)
         for (s̄, ā, r̄, d̄) in model.predecessors[s]
