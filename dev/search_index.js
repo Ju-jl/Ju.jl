@@ -117,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Interfaces",
     "title": "Ju.AbstractSyncEnvironment",
     "category": "type",
-    "text": "AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N}\n\nSupertype for synchronized environments with the observation space of type Tos and action space of type Tas. Here the N means the number of agents the environment can interact with. The Sync means that the environment will hang up and wait for the agent\'s input.\n\nRequired Methods Brief Description\nenv(action) Each environment env must be a functional object that receive an action as input and return a NamedTuple{(:observation, :reward, :isdone)}\nobserve(env) Return a NamedTuple{(:observation, :isdone)}\nreset!(env) Reset the environment and return a NamedTuple{(:observation, :isdone)}\nget_next_role(env) Required for multi-agent environments (N > 1). Tell the system which agent to act next\nOptional Methods \nobservationspace(env) Return the observation space of the environment. See also: AbstractSpace\nactionspace(env) Return the action space of the environment.  See also: AbstractSpace\nrender(env) Render the environment\nisend(env) Check whether the env reached an end or not. For single agent environment, observe(env).isdone is returned. For multi-agents environment, get_next_role(env) == nothing is returned\n\n\n\n\n\n"
+    "text": "AbstractSyncEnvironment{Tos, Tas, N} <: AbstractEnvironment{Tos, Tas, N}\n\nSupertype for synchronized environments with the observation space of type Tos and action space of type Tas. Here the N means the number of agents the environment can interact with. The Sync means that the environment will hang up and wait for the agent\'s input.\n\nRequired Methods Brief Description\nenv(action) Each environment env must be a functional object that receive an action as input and return a NamedTuple{(:observation, :reward, :isdone)}\nobserve(env) Return a NamedTuple{(:observation, :isdone)}\nreset!(env) Reset the environment and return a NamedTuple{(:observation, :isdone)}\nget_next_role(env) Required for multi-agent environments (N > 1). Tell the system which agent to act next\nOptional Methods \nobservationspace(env) Return the observation space of the environment. See also: AbstractSpace\nactionspace(env) Return the action space of the environment.  See also: AbstractSpace\nrender(env) Render the environment\nisend(env) Check whether the env reached an end or not. For single agent environment, observe(env).isdone is returned. For multi-agents environment, get_next_role(env) === nothing is returned\n\n\n\n\n\n"
 },
 
 {
@@ -326,6 +326,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Components",
     "category": "section",
     "text": "This package has implemented some basic components which inherit from the abstract types defined at Interfaces.Pages = [\"components.md\"]"
+},
+
+{
+    "location": "components/#Ju.CartPoleEnv",
+    "page": "Components",
+    "title": "Ju.CartPoleEnv",
+    "category": "type",
+    "text": "Classic cart-pole system implemented by Rich Sutton et al. See the original file at http://incompleteideas.net/sutton/book/code/pole.c. Or the python version at https://github.com/openai/gym/blob/master/gym/envs/classic_control/cartpole.py\n\n\n\n\n\n"
 },
 
 {
