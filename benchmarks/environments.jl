@@ -21,7 +21,7 @@ function benchmark_env(env, nsteps=10^3)
     display(@benchmark observe($env))
     println("\n", repeat('=', 50))
     println("\nrun $nsteps steps\n")
-    display(@benchmark run_env($env))
+    display(@benchmark run_env($env, $nsteps))
     println("\n", repeat('=', 50))
 end
 
