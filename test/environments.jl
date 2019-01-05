@@ -1,14 +1,17 @@
 @testset "environments" begin
 
-    function general_environment_test(env, max_steps=100)
-        @test reset!(env) == observe(env)
-
-        while observe(env).isdone == false && max_steps > 0
+    function general_environment_test(env, steps=10^2)
+        reset!(env)
+        @test observe(env).isdone == false
+        while steps > 0
+            if observe(env).isdone
+                reset!(env)
+                @test observe(env).isdone == false
+            end
             env(sample(actionspace(env)))
-            max_steps -= 1
+            @test observe(env).observation ∈ observationspace(env)
+            steps -= 1
         end
-
-        @test observe(env).observation ∈ observationspace(env)
     end
 
     @testset "SimpleRandomWalkEnv" begin
