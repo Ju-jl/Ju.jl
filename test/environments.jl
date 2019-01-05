@@ -1,16 +1,23 @@
 @testset "environments" begin
-    N = 7
-    start = 3
-    actions = [-1, 1]
-    env = SimpleRandomWalkEnv(N=N, actions=actions, start=start)
 
-    @test reset!(env) == (observation=start, isdone=false)
-    @test observe(env) == (observation=start, isdone=false)
-    @test observationspace(env) == DiscreteSpace(N)
-    @test actionspace(env) == DiscreteSpace(length(actions))
+    function general_environment_test(env, max_steps=100)
+        @test reset!(env) == observe(env)
 
-    while observe(env).isdone == false
-        env(rand(1:length(actions)))
+        while observe(env).isdone == false && max_steps > 0
+            env(sample(actionspace(env)))
+            max_steps -= 1
+        end
+
+        @test observe(env).observation ∈ observationspace(env)
     end
-    @test observe(env).observation in [1, N]
+
+    @testset "SimpleRandomWalkEnv" begin
+        env = SimpleRandomWalkEnv(N=7, actions=[-1, 1], start=3)
+        general_environment_test(env)
+    end
+
+    @testset "CartPoleEnv" begin
+        env = CartPoleEnv()
+        general_environment_test(env)
+    end
 end

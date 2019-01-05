@@ -70,5 +70,10 @@ function reset!(env::CartPoleEnv)
 end
 
 observe(env::CartPoleEnv) = (observation=env.state, isdone=env.isdone)
-observationspace(env::CartPoleEnv) = MultiContinuousSpace([typemin(Float64) for _ in 1:4], [typemax(Float64) for _ in 1:4])
+
+function observationspace(env::CartPoleEnv)
+    high = [env.x_threshold * 2, typemax(Float64), env.theta_threshold_radians * 2, typemax(Float64)]
+    MultiContinuousSpace(-high, high)
+end
+
 actionspace(env::CartPoleEnv) = DiscreteSpace(2)
