@@ -1,3 +1,5 @@
+using StatsBase:sample
+
 """
     CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     CircularTurnBuffer{names, types}(capacities::NTuple{N, Int}, sizes::NTuple{N, NTuple{M, Int} where M}) where {names, types, N}
@@ -70,6 +72,29 @@ end
 length(b::CircularSARDBuffer) = length(b.isdone)
 capacity(b::CircularSARDBuffer) = capacity(b.isdone)
 isfull(b::CircularSARDBuffer) = isfull(b.isdone)
+
+"""
+    batch_sample(b::CircularSARDBuffer, batch_size::Int)
+
+Sample a random batch of **S**tates, **A**ctions, **R**ewards, is**D**one,
+next**S**tates, next**A**ctions without replacement.
+"""
+function batch_sample(b::CircularSARDBuffer, batch_size::Int;replace=true)
+    inds = sample(1:length(b), batch_size;replace=replace)
+    inds_internal_SA = map(i -> _buffer_index(b.state, i), inds)
+    inds_internal_RD = map(i -> _buffer_index(b.reward, i), inds)
+    inds .+=  1
+    inds_internal_shift_SA = map(i -> _buffer_index(b.state, i), inds)
+
+    state = view(b.state.buffer, inds_internal_SA)
+    action = view(b.action.buffer, inds_internal_SA)
+    reward = view(b.reward.buffer, inds_internal_RD)
+    isdone = view(b.isdone.buffer, inds_internal_RD)
+    nextstate = view(b.state.buffer, inds_internal_shift_SA)
+    nextaction = view(b.action.buffer, inds_internal_shift_SA)
+
+    state, action, reward, isdone, nextstate, nextaction
+end
 
 ##############################
 # CircularSARDSBuffer

@@ -1,4 +1,4 @@
-export CircularArrayBuffer,
+export CircularArrayBuffer, batch_sample,
        CircularTurnBuffer, CircularSARDBuffer, CircularSARDSBuffer, CircularSARDSABuffer,
        EpisodeTurnBuffer, EpisodeSARDBuffer, EpisodeSARDSBuffer, EpisodeSARDSABuffer
 
