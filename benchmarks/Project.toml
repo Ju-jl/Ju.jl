@@ -1,3 +1,4 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Ju = "449ae9ca-b987-11e8-3919-0764a06dfe61"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"

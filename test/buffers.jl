@@ -80,7 +80,8 @@ end
         @test isempty(b) == true
         @test capacity(b) == 3
 
-        push!(b, 1, 1, 1., false, 2, 2)
+        push!(b, 1, 1)
+        push!(b, 1., false, 2, 2)
         @test length(b) == 1
         @test size(b) == (1,)
         @test isfull(b) == false

@@ -55,6 +55,18 @@ function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta
     push!(b.action, na)
 end
 
+function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta) where {Ts, Ta}
+    push!(b.state, s)
+    push!(b.action, a)
+end
+
+function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
+end
+
 length(b::CircularSARDBuffer) = length(b.isdone)
 capacity(b::CircularSARDBuffer) = capacity(b.isdone)
 isfull(b::CircularSARDBuffer) = isfull(b.isdone)
