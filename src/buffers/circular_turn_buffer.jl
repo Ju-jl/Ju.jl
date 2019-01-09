@@ -86,12 +86,12 @@ function batch_sample(b::CircularSARDBuffer, batch_size::Int;replace=true)
     inds .+=  1
     inds_internal_shift_SA = map(i -> _buffer_index(b.state, i), inds)
 
-    state = view(b.state.buffer, inds_internal_SA)
-    action = view(b.action.buffer, inds_internal_SA)
-    reward = view(b.reward.buffer, inds_internal_RD)
-    isdone = view(b.isdone.buffer, inds_internal_RD)
-    nextstate = view(b.state.buffer, inds_internal_shift_SA)
-    nextaction = view(b.action.buffer, inds_internal_shift_SA)
+    state = view_internal(b.state, inds_internal_SA)
+    action = view_internal(b.action, inds_internal_SA)
+    reward = view_internal(b.reward, inds_internal_RD)
+    isdone = view_internal(b.isdone, inds_internal_RD)
+    nextstate = view_internal(b.state, inds_internal_shift_SA)
+    nextaction = view_internal(b.action, inds_internal_shift_SA)
 
     state, action, reward, isdone, nextstate, nextaction
 end

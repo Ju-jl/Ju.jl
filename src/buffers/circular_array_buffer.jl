@@ -60,6 +60,8 @@ for func in [:view, :getindex]
     end
 end
 
+view_internal(cb::CircularArrayBuffer{E, T, N}, I::Vector{Int}) where {E, T, N} = view(cb.buffer, [(:) for _ in 1 : N-1]..., I)
+
 ## kept only to show elements
 ## never manually get/set the inner elements because it is very slow
 ## see https://discourse.julialang.org/t/varargs-performance/13578
