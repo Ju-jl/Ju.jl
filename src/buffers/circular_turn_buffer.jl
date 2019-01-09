@@ -1,4 +1,4 @@
-using StatsBase:sample
+using StatsBase:sample!
 
 """
     CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
@@ -18,7 +18,7 @@ struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     end
 end
 
-capacity(b::CircularTurnBuffer) = min(capacity(x) for x in buffers(b))
+capacity(b::CircularTurnBuffer) = min(capacity(x) for x in b.buffers)
 
 ##############################
 # CircularSARDBuffer
@@ -46,54 +46,49 @@ function CircularSARDBuffer(
         (state_size, action_size, (), ()))
 end
 
-function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
-    if isempty(b)
-        push!(b.state, s)
-        push!(b.action, a)
-    end
-    push!(b.reward, r)
-    push!(b.isdone, d)
-    push!(b.state, ns)
-    push!(b.action, na)
+function push!(b::CircularSARDBuffer, s, a)
+    push!(b.buffers.state, s)
+    push!(b.buffers.action, a)
 end
 
-function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta) where {Ts, Ta}
-    push!(b.state, s)
-    push!(b.action, a)
+function push!(b::CircularSARDBuffer, r, d, ns, na)
+    push!(b.buffers.reward, r)
+    push!(b.buffers.isdone, d)
+    push!(b.buffers.state, ns)
+    push!(b.buffers.action, na)
 end
 
-function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
-    push!(b.reward, r)
-    push!(b.isdone, d)
-    push!(b.state, ns)
-    push!(b.action, na)
-end
+getindex(b::CircularSARDBuffer, ::Val{:state}, i) = b.buffers.state[i]
+getindex(b::CircularSARDBuffer, ::Val{:action}, i) = b.buffers.action[i]
+getindex(b::CircularSARDBuffer, ::Val{:reward}, i) = b.buffers.reward[i]
+getindex(b::CircularSARDBuffer, ::Val{:isdone}, i) = b.buffers.isdone[i]
+getindex(b::CircularSARDBuffer, ::Val{:nextstate}, i) = b.buffers.state[i+1]
+getindex(b::CircularSARDBuffer, ::Val{:nextaction}, i) = b.buffers.action[i+1]
 
-length(b::CircularSARDBuffer) = length(b.isdone)
-capacity(b::CircularSARDBuffer) = capacity(b.isdone)
-isfull(b::CircularSARDBuffer) = isfull(b.isdone)
+length(b::CircularSARDBuffer) = length(b.buffers.isdone)
+capacity(b::CircularSARDBuffer) = capacity(b.buffers.isdone)
+isfull(b::CircularSARDBuffer) = isfull(b.buffers.isdone)
 
 """
-    batch_sample(b::CircularSARDBuffer, batch_size::Int)
+    sample!(b::CircularSARDBuffer, batch_indices::BatchIndices)
 
 Sample a random batch of **S**tates, **A**ctions, **R**ewards, is**D**one,
 next**S**tates, next**A**ctions without replacement.
 """
-function batch_sample(b::CircularSARDBuffer, batch_size::Int;replace=true)
-    inds = sample(1:length(b), batch_size;replace=replace)
-    inds_internal_SA = map(i -> _buffer_index(b.state, i), inds)
-    inds_internal_RD = map(i -> _buffer_index(b.reward, i), inds)
-    inds .+=  1
-    inds_internal_shift_SA = map(i -> _buffer_index(b.state, i), inds)
+function batch_sample(b::CircularSARDBuffer, batch_indices::BatchIndices{SARDSA})
+    sample!(1:length(b), batch_indices.indices.state)
+    batch_indices.indices.action .= batch_indices.indices.state
+    batch_indices.indices.reward .= batch_indices.indices.state
+    batch_indices.indices.isdone .= batch_indices.indices.state
+    map!(i -> i + 1, batch_indices.indices.nextstate, batch_indices.indices.state)
+    batch_indices.indices.nextaction .= batch_indices.indices.nextstate
 
-    state = view_internal(b.state, inds_internal_SA)
-    action = view_internal(b.action, inds_internal_SA)
-    reward = view_internal(b.reward, inds_internal_RD)
-    isdone = view_internal(b.isdone, inds_internal_RD)
-    nextstate = view_internal(b.state, inds_internal_shift_SA)
-    nextaction = view_internal(b.action, inds_internal_shift_SA)
-
-    state, action, reward, isdone, nextstate, nextaction
+    view(b.buffers.state, batch_indices.indices.state),
+    view(b.buffers.action, batch_indices.indices.action),
+    view(b.buffers.reward, batch_indices.indices.reward),
+    view(b.buffers.isdone, batch_indices.indices.isdone),
+    view(b.buffers.state, batch_indices.indices.nextstate),
+    view(b.buffers.action, batch_indices.indices.nextaction)
 end
 
 ##############################

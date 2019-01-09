@@ -12,13 +12,15 @@ println("\n", repeat('=', 50))
 println("\n push! buffer\n")
 display(@benchmark push!($buffer, 1.0, false, $(rand(state_size...)), $(rand(actions))))
 
+batch_indices = BatchIndices(32)
 println("\n", repeat('=', 50))
 println("\n batch_sample buffer\n")
-display(@benchmark batch_sample($buffer, 32))
+display(@benchmark batch_sample($buffer, $batch_indices))
 
+batch_indices = BatchIndices(64)
 println("\n", repeat('=', 50))
 println("\n batch_sample buffer\n")
-display(@benchmark batch_sample($buffer, 64))
+display(@benchmark batch_sample($buffer, batch_indices))
 
 function sample_N_batches(buffer, N, batch_size)
     for _ in 1:N
@@ -26,10 +28,15 @@ function sample_N_batches(buffer, N, batch_size)
     end
 end
 
-N, batch_size = 10, 32
+N, batch_indices = 10, BatchIndices(32)
 println("\n", repeat('=', 50))
-println("\n batch_sample (size=$batch_size) buffer $N times\n")
-display(@benchmark sample_N_batches($buffer, $N, $batch_size))
+println("\n batch_sample buffer $N times\n")
+display(@benchmark sample_N_batches($buffer, $N, $batch_indices))
+
+N, batch_indices = 10, BatchIndices(64)
+println("\n", repeat('=', 50))
+println("\n batch_sample buffer $N times\n")
+display(@benchmark sample_N_batches($buffer, $N, $batch_indices))
 
 # ==================================================
 

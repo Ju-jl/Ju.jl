@@ -54,13 +54,20 @@ size(cb::CircularArrayBuffer{E, T, N}) where {E, T, N} = (size(cb.buffer)[1:N-1]
 
 for func in [:view, :getindex]
      @eval @__MODULE__() begin
+        $func(cb::CircularArrayBuffer{E, T, 1}, i::Int) where {E, T} = $func(cb.buffer, _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 2}, i::Int) where {E, T} = $func(cb.buffer, :, _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 3}, i::Int) where {E, T} = $func(cb.buffer, :, :, _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 4}, i::Int) where {E, T} = $func(cb.buffer, :, :, :, _buffer_index(cb, i))
         $func(cb::CircularArrayBuffer{E, T, N}, i::Int) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]...,  _buffer_index(cb, i))
-        $func(cb::CircularArrayBuffer{E, T, N}, i::UnitRange{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]...,  _buffer_index(cb, i))
-        $func(cb::CircularArrayBuffer{E, T, N}, I::Vector{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]..., [_buffer_index(cb, i) for i in I])
+
+        $func(cb::CircularArrayBuffer{E, T, 1}, I::Vector{Int}) where {E, T} = $func(cb.buffer, map!(i -> _buffer_index(cb, i), I, I))
+        $func(cb::CircularArrayBuffer{E, T, 2}, I::Vector{Int}) where {E, T} = $func(cb.buffer, :, map!(i -> _buffer_index(cb, i), I, I))
+        $func(cb::CircularArrayBuffer{E, T, 3}, I::Vector{Int}) where {E, T} = $func(cb.buffer, :, :, map!(i -> _buffer_index(cb, i), I, I))
+        $func(cb::CircularArrayBuffer{E, T, 4}, I::Vector{Int}) where {E, T} = $func(cb.buffer, :, :, :, map!(i -> _buffer_index(cb, i), I, I))
+        $func(cb::CircularArrayBuffer{E, T, N}, I::Vector{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]..., map!(i -> _buffer_index(cb, i), I, I))
+        # $func(cb::CircularArrayBuffer{E, T, N}, i::UnitRange{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]...,  _buffer_index(cb, i))
     end
 end
-
-view_internal(cb::CircularArrayBuffer{E, T, N}, I::Vector{Int}) where {E, T, N} = view(cb.buffer, [(:) for _ in 1 : N-1]..., I)
 
 ## kept only to show elements
 ## never manually get/set the inner elements because it is very slow
@@ -112,8 +119,8 @@ end
     end
 end
 
-@inline function _buffer_index(cb::CircularArrayBuffer, i::UnitRange{Int})
-    start = _buffer_index(cb, i.start)
-    stop = _buffer_index(cb, i.stop)
-    start ≤ stop ? (start:stop) : vcat(start:capacity(cb), 1:stop)
-end
+# @inline function _buffer_index(cb::CircularArrayBuffer, i::UnitRange{Int})
+#     start = _buffer_index(cb, i.start)
+#     stop = _buffer_index(cb, i.stop)
+#     start ≤ stop ? (start:stop) : vcat(start:capacity(cb), 1:stop)
+# end
