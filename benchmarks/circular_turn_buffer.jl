@@ -46,58 +46,74 @@ display(@benchmark sample_N_batches($buffer, $N, $batch_indices))
 #   memory estimate:  0 bytes
 #   allocs estimate:  0
 #   --------------
-#   minimum time:     4.833 μs (0.00% GC)
-#   median time:      5.250 μs (0.00% GC)
-#   mean time:        5.314 μs (0.00% GC)
-#   maximum time:     9.633 μs (0.00% GC)
-#   --------------
-#   samples:          10000
-#   evals/sample:     6
-
-# ==================================================
-
-#  batch_sample buffer
-
-# BenchmarkTools.Trial:
-#   memory estimate:  3.02 KiB
-#   allocs estimate:  54
-#   --------------
-#   minimum time:     2.567 μs (0.00% GC)
-#   median time:      2.800 μs (0.00% GC)
-#   mean time:        3.121 μs (6.00% GC)
-#   maximum time:     165.700 μs (95.98% GC)
-#   --------------
-#   samples:          10000
-#   evals/sample:     9
-
-# ==================================================
-
-#  batch_sample buffer
-
-# BenchmarkTools.Trial:
-#   memory estimate:  4.14 KiB
-#   allocs estimate:  54
-#   --------------
-#   minimum time:     2.937 μs (0.00% GC)
-#   median time:      3.237 μs (0.00% GC)
-#   mean time:        3.618 μs (5.56% GC)
-#   maximum time:     183.113 μs (95.33% GC)
+#   minimum time:     3.072 μs (0.00% GC)
+#   median time:      3.252 μs (0.00% GC)
+#   mean time:        3.405 μs (0.00% GC)
+#   maximum time:     20.181 μs (0.00% GC)
 #   --------------
 #   samples:          10000
 #   evals/sample:     8
 
 # ==================================================
 
-#  batch_sample (size=32) buffer 10 times
+#  batch_sample buffer
 
 # BenchmarkTools.Trial:
-#   memory estimate:  30.16 KiB
-#   allocs estimate:  540
+#   memory estimate:  736 bytes
+#   allocs estimate:  22
 #   --------------
-#   minimum time:     25.399 μs (0.00% GC)
-#   median time:      27.600 μs (0.00% GC)
-#   mean time:        30.786 μs (4.66% GC)
-#   maximum time:     1.562 ms (94.31% GC)
+#   minimum time:     1.057 μs (0.00% GC)
+#   median time:      1.194 μs (0.00% GC)
+#   mean time:        1.343 μs (2.89% GC)
+#   maximum time:     132.621 μs (98.34% GC)
+#   --------------
+#   samples:          10000
+#   evals/sample:     10
+
+# ==================================================
+
+#  batch_sample buffer
+
+# BenchmarkTools.Trial:
+#   memory estimate:  736 bytes
+#   allocs estimate:  22
+#   --------------
+#   minimum time:     1.784 μs (0.00% GC)
+#   median time:      1.951 μs (0.00% GC)
+#   mean time:        2.129 μs (1.96% GC)
+#   maximum time:     145.707 μs (97.78% GC)
+#   --------------
+#   samples:          10000
+#   evals/sample:     10
+
+# ==================================================
+
+#  batch_sample buffer 10 times
+
+# BenchmarkTools.Trial:
+#   memory estimate:  7.19 KiB
+#   allocs estimate:  220
+#   --------------
+#   minimum time:     10.459 μs (0.00% GC)
+#   median time:      11.846 μs (0.00% GC)
+#   mean time:        12.808 μs (3.40% GC)
+#   maximum time:     1.528 ms (98.98% GC)
+#   --------------
+#   samples:          10000
+#   evals/sample:     1
+
+# ==================================================
+
+#  batch_sample buffer 10 times
+
+# BenchmarkTools.Trial:
+#   memory estimate:  7.19 KiB
+#   allocs estimate:  220
+#   --------------
+#   minimum time:     17.639 μs (0.00% GC)
+#   median time:      20.077 μs (0.00% GC)
+#   mean time:        21.642 μs (2.07% GC)
+#   maximum time:     1.575 ms (98.49% GC)
 #   --------------
 #   samples:          10000
 #   evals/sample:     1
