@@ -126,6 +126,14 @@ end
         @test isfull(b) == true
         @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false, nextstate=[3 3; 3 3], nextaction=3)
         @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=false, nextstate=[5 5; 5 5], nextaction=5)
+
+        batch_inds = [3, 2, 1]
+        batch_state = reshape([4 4 4 4 3 3 3 3 2 2 2 2], 2, 2, 3)
+        batch_action = [4, 3, 2]
+        batch_reward = [4., 3., 2.]
+        batch_isdone = [false, false, false]
+        batch_nextstate = reshape([5 5 5 5 4 4 4 4 3 3 3 3], 2, 2, 3)
+        @test Ju.batch_view(b, batch_inds) == (batch_state, batch_action, batch_reward, batch_isdone, batch_nextstate)
     end
     @testset "CircularSARDSBuffer" begin
         b = CircularSARDSBuffer(3)

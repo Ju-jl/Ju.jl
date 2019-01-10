@@ -32,6 +32,8 @@ const CircularSARDBuffer = CircularTurnBuffer{SARD}
 
 !!! note
     Note that, the length of state and action is 1 step longer in oder to store the state and action in the next step. This is the supposed behavior of **SARD** buffers.
+
+See also: [`batch_sample`](@ref)
 """
 function CircularSARDBuffer(
     capacity;
@@ -88,7 +90,7 @@ isfull(b::CircularSARDBuffer) = isfull(b.isdone)
     sample!(b::CircularSARDBuffer, batch_size::Int)
 
 Sample a random batch of **S**tates, **A**ctions, **R**ewards, is**D**one,
-next**S**tates, next**A**ctions without replacement.
+next**S**tates, next**A**ctions without replacement of `batch_size`.
 """
 function batch_sample(b::CircularSARDBuffer, batch_size::Int)
     inds = rand(1:length(b), batch_size)
