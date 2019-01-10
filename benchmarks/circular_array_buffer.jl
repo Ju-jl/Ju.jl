@@ -32,10 +32,10 @@ display(@benchmark view($buffer, $(sample(1:length(buffer), 10))))
 #   memory estimate:  0 bytes
 #   allocs estimate:  0
 #   --------------
-#   minimum time:     2.444 μs (0.00% GC)
-#   median time:      2.594 μs (0.00% GC)
-#   mean time:        3.054 μs (0.00% GC)
-#   maximum time:     11.789 μs (0.00% GC)
+#   minimum time:     2.422 μs (0.00% GC)
+#   median time:      2.467 μs (0.00% GC)
+#   mean time:        2.478 μs (0.00% GC)
+#   maximum time:     5.378 μs (0.00% GC)
 #   --------------
 #   samples:          10000
 #   evals/sample:     9
@@ -45,61 +45,61 @@ display(@benchmark view($buffer, $(sample(1:length(buffer), 10))))
 # getindex of CircularArrayBuffer
 
 # BenchmarkTools.Trial:
-#   memory estimate:  50.30 KiB
-#   allocs estimate:  8
+#   memory estimate:  50.08 KiB
+#   allocs estimate:  2
 #   --------------
-#   minimum time:     6.200 μs (0.00% GC)
-#   median time:      7.300 μs (0.00% GC)
-#   mean time:        13.594 μs (25.39% GC)
-#   maximum time:     11.704 ms (99.83% GC)
+#   minimum time:     5.300 μs (0.00% GC)
+#   median time:      16.560 μs (0.00% GC)
+#   mean time:        16.439 μs (21.83% GC)
+#   maximum time:     716.460 μs (96.83% GC)
 #   --------------
 #   samples:          10000
-#   evals/sample:     4
+#   evals/sample:     5
 
 # ==================================================
 
 # view element of CircularArrayBuffer
 
 # BenchmarkTools.Trial:
-#   memory estimate:  288 bytes
-#   allocs estimate:  7
+#   memory estimate:  64 bytes
+#   allocs estimate:  1
 #   --------------
-#   minimum time:     601.149 ns (0.00% GC)
-#   median time:      629.709 ns (0.00% GC)
-#   mean time:        714.948 ns (8.06% GC)
-#   maximum time:     305.314 μs (99.72% GC)
+#   minimum time:     13.199 ns (0.00% GC)
+#   median time:      15.000 ns (0.00% GC)
+#   mean time:        17.064 ns (8.11% GC)
+#   maximum time:     530.100 ns (96.81% GC)
 #   --------------
 #   samples:          10000
-#   evals/sample:     175
+#   evals/sample:     1000
 
 # ==================================================
 
 # view elements of CircularArrayBuffer
 
 # BenchmarkTools.Trial:
-#   memory estimate:  544 bytes
-#   allocs estimate:  12
+#   memory estimate:  320 bytes
+#   allocs estimate:  6
 #   --------------
-#   minimum time:     701.379 ns (0.00% GC)
-#   median time:      749.655 ns (0.00% GC)
-#   mean time:        883.540 ns (10.07% GC)
-#   maximum time:     424.337 μs (99.59% GC)
+#   minimum time:     78.189 ns (0.00% GC)
+#   median time:      84.877 ns (0.00% GC)
+#   mean time:        104.887 ns (15.44% GC)
+#   maximum time:     1.834 μs (94.18% GC)
 #   --------------
 #   samples:          10000
-#   evals/sample:     145
+#   evals/sample:     972
 
 # ==================================================
 
 # view elements of CircularArrayBuffer
 
 # BenchmarkTools.Trial:
-#   memory estimate:  576 bytes
-#   allocs estimate:  12
+#   memory estimate:  352 bytes
+#   allocs estimate:  6
 #   --------------
-#   minimum time:     701.429 ns (0.00% GC)
-#   median time:      737.857 ns (0.00% GC)
-#   mean time:        877.624 ns (8.98% GC)
-#   maximum time:     340.946 μs (99.70% GC)
+#   minimum time:     86.848 ns (0.00% GC)
+#   median time:      93.111 ns (0.00% GC)
+#   mean time:        110.418 ns (15.03% GC)
+#   maximum time:     1.325 μs (85.43% GC)
 #   --------------
 #   samples:          10000
-#   evals/sample:     140
+#   evals/sample:     958

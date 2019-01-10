@@ -1,5 +1,3 @@
-using StatsBase:sample!
-
 """
     CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     CircularTurnBuffer{names, types}(capacities::NTuple{N, Int}, sizes::NTuple{N, NTuple{M, Int} where M}) where {names, types, N}
@@ -18,7 +16,7 @@ struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     end
 end
 
-capacity(b::CircularTurnBuffer) = min(capacity(x) for x in b.buffers)
+capacity(b::CircularTurnBuffer) = min(capacity(x) for x in buffers(b))
 
 ##############################
 # CircularSARDBuffer
@@ -46,49 +44,62 @@ function CircularSARDBuffer(
         (state_size, action_size, (), ()))
 end
 
+getindex(b::CircularSARDBuffer, i::Int) = (state=b.state[i], action=b.action[i], reward=b.reward[i], isdone=b.isdone[i], nextstate=b.state[i+1], nextaction=b.action[i+1])
+function eltype(b::CircularSARDBuffer{names, types}) where {names, types}
+    ts, ta, tr, td = types.parameters[2].parameters
+    NamedTuple{SARDSA, Tuple{ts, ta, tr, td, ts, ta}}
+end
+
+function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
+    if isempty(b)
+        push!(b.state, s)
+        push!(b.action, a)
+    end
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
+end
+
 function push!(b::CircularSARDBuffer, s, a)
-    push!(b.buffers.state, s)
-    push!(b.buffers.action, a)
+    push!(b.state, s)
+    push!(b.action, a)
 end
 
 function push!(b::CircularSARDBuffer, r, d, ns, na)
-    push!(b.buffers.reward, r)
-    push!(b.buffers.isdone, d)
-    push!(b.buffers.state, ns)
-    push!(b.buffers.action, na)
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
 end
 
-getindex(b::CircularSARDBuffer, ::Val{:state}, i) = b.buffers.state[i]
-getindex(b::CircularSARDBuffer, ::Val{:action}, i) = b.buffers.action[i]
-getindex(b::CircularSARDBuffer, ::Val{:reward}, i) = b.buffers.reward[i]
-getindex(b::CircularSARDBuffer, ::Val{:isdone}, i) = b.buffers.isdone[i]
-getindex(b::CircularSARDBuffer, ::Val{:nextstate}, i) = b.buffers.state[i+1]
-getindex(b::CircularSARDBuffer, ::Val{:nextaction}, i) = b.buffers.action[i+1]
+getindex(b::CircularSARDBuffer, ::Val{:state}, i) = b.state[i]
+getindex(b::CircularSARDBuffer, ::Val{:action}, i) = b.action[i]
+getindex(b::CircularSARDBuffer, ::Val{:reward}, i) = b.reward[i]
+getindex(b::CircularSARDBuffer, ::Val{:isdone}, i) = b.isdone[i]
+getindex(b::CircularSARDBuffer, ::Val{:nextstate}, i) = b.state[i+1]
+getindex(b::CircularSARDBuffer, ::Val{:nextaction}, i) = b.action[i+1]
 
-length(b::CircularSARDBuffer) = length(b.buffers.isdone)
-capacity(b::CircularSARDBuffer) = capacity(b.buffers.isdone)
-isfull(b::CircularSARDBuffer) = isfull(b.buffers.isdone)
+length(b::CircularSARDBuffer) = length(b.isdone)
+capacity(b::CircularSARDBuffer) = capacity(b.isdone)
+isfull(b::CircularSARDBuffer) = isfull(b.isdone)
 
 """
-    sample!(b::CircularSARDBuffer, batch_indices::BatchIndices)
+    sample!(b::CircularSARDBuffer, batch_size::Int)
 
 Sample a random batch of **S**tates, **A**ctions, **R**ewards, is**D**one,
 next**S**tates, next**A**ctions without replacement.
 """
-function batch_sample(b::CircularSARDBuffer, batch_indices::BatchIndices{SARDSA})
-    sample!(1:length(b), batch_indices.indices.state)
-    batch_indices.indices.action .= batch_indices.indices.state
-    batch_indices.indices.reward .= batch_indices.indices.state
-    batch_indices.indices.isdone .= batch_indices.indices.state
-    map!(i -> i + 1, batch_indices.indices.nextstate, batch_indices.indices.state)
-    batch_indices.indices.nextaction .= batch_indices.indices.nextstate
+function batch_sample(b::CircularSARDBuffer, batch_size::Int)
+    inds = rand(1:length(b), batch_size)
 
-    view(b.buffers.state, batch_indices.indices.state),
-    view(b.buffers.action, batch_indices.indices.action),
-    view(b.buffers.reward, batch_indices.indices.reward),
-    view(b.buffers.isdone, batch_indices.indices.isdone),
-    view(b.buffers.state, batch_indices.indices.nextstate),
-    view(b.buffers.action, batch_indices.indices.nextaction)
+    s = view(b.state, inds)
+    a = view(b.action, inds)
+    r = view(b.reward, inds)
+    d = view(b.isdone, inds)
+
+    ns = view(b.state, inds .+ 1)
+    (s, a, r, d, ns), inds
 end
 
 ##############################

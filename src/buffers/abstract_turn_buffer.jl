@@ -1,5 +1,5 @@
 export AbstractTurnBuffer, SARD, SARDSA, SARDBuffer, SARDSABuffer,
-       isfull, capacity, empty!
+       isfull, capacity, buffers, empty!
 
 import Base: size, getindex, length, push!, eltype, view,
              empty!, isempty, getproperty, lastindex
@@ -38,13 +38,11 @@ const SARDSABuffer = AbstractTurnBuffer{SARDSA}
 
 function isfull end
 function capacity end
+buffers(b::AbstractTurnBuffer) = getfield(b, :buffers)
 
 size(b::AbstractTurnBuffer) = (length(b),)
 isempty(b::AbstractTurnBuffer) = length(b) == 0
 lastindex(b::AbstractTurnBuffer) = length(b)
-
-getindex(b::SARDBuffer, i::Int) = merge(NamedTuple(), ((x, b[x, i])) for x in SARDSA)
-getindex(b::SARDSBuffer, i::Int) = merge(NamedTuple(), ((x, b[x, i])) for x in SARDS)
-getindex(b::SARDSABuffer, i::Int) = merge(NamedTuple(), ((x, b[x, i])) for x in SARDSA)
-
-getindex(b::AbstractTurnBuffer, x::Symbol, i) = getindex(b, Val(x), i)
+getindex(b::AbstractTurnBuffer, i::Int) = eltype(b)(x[i] for x in buffers(b))
+empty!(b::AbstractTurnBuffer) = for x in buffers(b) empty!(x) end
+getproperty(b::AbstractTurnBuffer, f::Symbol) = getfield(buffers(b), f)
