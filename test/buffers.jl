@@ -68,7 +68,7 @@
         @test b[1] == 3 * A
         @test b[end] == 5 * A
         
-        @test b[1:end] == reshape([c for x in 3:5 for c in x*A], 2, 2, 3)
+        @test b == reshape([c for x in 3:5 for c in x*A], 2, 2, 3)
     end
 end
 
@@ -92,14 +92,14 @@ end
         @test length(b) == 3
         @test isfull(b) == true
         @test isempty(b) == false
-        @test b[1] == (state=1, action=1, reward=1., isdone=false)
-        @test b[end] == (state=3, action=3, reward=3., isdone=false)
+        @test b[1] == (state=1, action=1, reward=1., isdone=false, nextstate=2, nextaction=2)
+        @test b[end] == (state=3, action=3, reward=3., isdone=false, nextstate=4, nextaction=4)
 
         push!(b, 4, 4, 4., false, 5, 5)
         @test length(b) == 3
         @test isfull(b) == true
-        @test b[1] == (state=2, action=2, reward=2., isdone=false)
-        @test b[end] == (state=4, action=4, reward=4., isdone=false)
+        @test b[1] == (state=2, action=2, reward=2., isdone=false, nextstate=3, nextaction=3)
+        @test b[end] == (state=4, action=4, reward=4., isdone=false, nextstate=5, nextaction=5)
     end
     @testset "CircularSARDBuffer of 2D element type" begin
         b = CircularSARDBuffer(3; state_type=Array{Int,2}, state_size=(2,2))
@@ -118,14 +118,14 @@ end
         @test length(b) == 3
         @test isfull(b) == true
         @test isempty(b) == false
-        @test b[1] == (state=[1 1; 1 1], action=1, reward=1., isdone=false)
-        @test b[end] == (state=[3 3; 3 3], action=3, reward=3., isdone=false)
+        @test b[1] == (state=[1 1; 1 1], action=1, reward=1., isdone=false, nextstate=[2 2; 2 2], nextaction=2)
+        @test b[end] == (state=[3 3; 3 3], action=3, reward=3., isdone=false, nextstate=[4 4; 4 4], nextaction=4)
 
         push!(b, [4 4; 4 4], 4, 4., false, [5 5; 5 5], 5)
         @test length(b) == 3
         @test isfull(b) == true
-        @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false)
-        @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=false)
+        @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false, nextstate=[3 3; 3 3], nextaction=3)
+        @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=false, nextstate=[5 5; 5 5], nextaction=5)
     end
     @testset "CircularSARDSBuffer" begin
         b = CircularSARDSBuffer(3)
