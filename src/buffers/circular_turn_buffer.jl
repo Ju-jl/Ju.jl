@@ -92,14 +92,15 @@ next**S**tates, next**A**ctions without replacement.
 """
 function batch_sample(b::CircularSARDBuffer, batch_size::Int)
     inds = rand(1:length(b), batch_size)
+    batch_view(b, inds), inds
+end
 
-    s = view(b.state, inds)
-    a = view(b.action, inds)
-    r = view(b.reward, inds)
-    d = view(b.isdone, inds)
-
-    ns = view(b.state, inds .+ 1)
-    (s, a, r, d, ns), inds
+function batch_view(b::CircularSARDBuffer, inds)
+    view(b.state, inds),
+    view(b.action, inds),
+    view(b.reward, inds),
+    view(b.isdone, inds),
+    view(b.state, inds .+ 1)
 end
 
 ##############################
