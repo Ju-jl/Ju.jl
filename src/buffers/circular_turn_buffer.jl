@@ -17,6 +17,10 @@ struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
 end
 
 capacity(b::CircularTurnBuffer) = min(capacity(x) for x in buffers(b))
+length(b::CircularTurnBuffer) = length(b.isdone)
+capacity(b::CircularTurnBuffer) = capacity(b.isdone)
+isfull(b::CircularTurnBuffer) = isfull(b.isdone)
+
 
 ##############################
 # CircularSARDBuffer
@@ -82,10 +86,6 @@ getindex(b::CircularSARDBuffer, ::Val{:isdone}, i) = b.isdone[i]
 getindex(b::CircularSARDBuffer, ::Val{:nextstate}, i) = b.state[i+1]
 getindex(b::CircularSARDBuffer, ::Val{:nextaction}, i) = b.action[i+1]
 
-length(b::CircularSARDBuffer) = length(b.isdone)
-capacity(b::CircularSARDBuffer) = capacity(b.isdone)
-isfull(b::CircularSARDBuffer) = isfull(b.isdone)
-
 """
     sample!(b::CircularSARDBuffer, batch_size::Int)
 
@@ -130,10 +130,6 @@ function push!(b::CircularSARDSBuffer{Tuple{Ts, Ta, Float64, Bool, Ts}}, s::Ts, 
     push!(b.nextstate, ns)
 end
 
-length(b::CircularSARDSBuffer) = length(b.isdone)
-capacity(b::CircularSARDSBuffer) = capacity(b.isdone)
-isfull(b::CircularSARDSBuffer) = isfull(b.isdone)
-
 ##############################
 # CircularSARDSABuffer
 ##############################
@@ -160,7 +156,3 @@ function push!(b::CircularSARDSABuffer{Tuple{Ts, Ta, Float64, Bool, Ts, Ta}}, s:
     push!(b.nextstate, ns)
     push!(b.nextaction, na)
 end
-
-length(b::CircularSARDSABuffer) = length(b.isdone)
-capacity(b::CircularSARDSABuffer) = capacity(b.isdone)
-isfull(b::CircularSARDSABuffer) = isfull(b.isdone)
