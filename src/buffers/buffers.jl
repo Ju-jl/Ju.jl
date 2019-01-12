@@ -1,4 +1,5 @@
 export CircularArrayBuffer, batch_sample,
+       SumTree,
        CircularTurnBuffer, CircularSARDBuffer, CircularSARDSBuffer, CircularSARDSABuffer,
        EpisodeTurnBuffer, EpisodeSARDBuffer, EpisodeSARDSBuffer, EpisodeSARDSABuffer
 

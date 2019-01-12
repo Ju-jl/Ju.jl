@@ -16,7 +16,6 @@ struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     end
 end
 
-capacity(b::CircularTurnBuffer) = min(capacity(x) for x in buffers(b))
 length(b::CircularTurnBuffer) = length(b.isdone)
 capacity(b::CircularTurnBuffer) = capacity(b.isdone)
 isfull(b::CircularTurnBuffer) = isfull(b.isdone)

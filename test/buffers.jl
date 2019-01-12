@@ -1,5 +1,11 @@
 @testset "buffer" begin
 
+@testset "SumTree" begin
+    t = SumTree(4)
+    push!(t, 1)
+    @test 
+end
+
 @testset "CircularArrayBuffer" begin
     A = ones(2, 2)
     @testset "1D Int" begin
@@ -38,6 +44,28 @@
         @test isempty(b) == true
         @test length(b) == 0
         @test size(b) == (0,)
+
+        push!(b, 6)
+        @test isfull(b) == false
+        @test isempty(b) == false
+        @test length(b) == 1
+        @test size(b) == (1,)
+        @test b[1] == 6
+
+        push!(b, 7)
+        push!(b, 8)
+        @test isfull(b) == true
+        @test isempty(b) == false
+        @test length(b) == 3
+        @test size(b) == (3,)
+        @test b[[1,2,3]] == [6, 7, 8]
+
+        push!(b, 9)
+        @test isfull(b) == true
+        @test isempty(b) == false
+        @test length(b) == 3
+        @test size(b) == (3,)
+        @test b[[1,2,3]] == [7, 8, 9]
     end
 
     @testset "2D Float64" begin
