@@ -1,9 +1,92 @@
 @testset "buffer" begin
 
 @testset "SumTree" begin
-    t = SumTree(4)
+    t = SumTree(3)
+    @test capacity(t) == 3
+    @test length(t) == 0
+
     push!(t, 1)
-    @test 
+    @test capacity(t) == 3
+    @test length(t) == 1
+    @test size(t) == (1,)
+    @test t[1] == 1
+
+    t[1] = 2
+    @test capacity(t) == 3
+    @test length(t) == 1
+    @test t[1] == 2
+
+    push!(t, 3)
+    @test capacity(t) == 3
+    @test length(t) == 2
+    @test t[1:end] == [2, 3]
+    @test t.tree == [5., 5., 0., 2, 3, 0]
+    @test Ju.get(t, 0) == (1, 2.)
+    @test Ju.get(t, 1) == (1, 2.)
+    @test Ju.get(t, 2) == (1, 2.)
+    @test Ju.get(t, 3) == (2, 3.)
+    @test Ju.get(t, 4) == (2, 3.)
+    @test Ju.get(t, 5) == (2, 3.)
+
+    t[1] = 1
+    t[2] = 2
+    @test capacity(t) == 3
+    @test length(t) == 2
+    @test t[1:end] == [1, 2]
+    @test t.tree == [3., 3., 0., 1, 2, 0]
+    @test Ju.get(t, 0) == (1, 1.)
+    @test Ju.get(t, 1) == (1, 1.)
+    @test Ju.get(t, 2) == (2, 2.)
+    @test Ju.get(t, 3) == (2, 2.)
+
+    push!(t, 3)
+    @test capacity(t) == 3
+    @test length(t) == 3
+    @test t[1:end] == [1, 2, 3]
+    @test t.tree == [6., 3., 3., 1., 2., 3.]
+    @test Ju.get(t, 0) == (1, 1.)
+    @test Ju.get(t, 1) == (1, 1.)
+    @test Ju.get(t, 2) == (2, 2.)
+    @test Ju.get(t, 3) == (2, 2.)
+    @test Ju.get(t, 4) == (3, 3.)
+    @test Ju.get(t, 5) == (3, 3.)
+    @test Ju.get(t, 6) == (3, 3.)
+
+    push!(t, 4)
+    @test capacity(t) == 3
+    @test length(t) == 3
+    @test t[1:end] == [2, 3, 4]
+    @test t.tree == [9., 6., 3., 4, 2, 3]
+    @test Ju.get(t, 0) == (3, 4.)
+    @test Ju.get(t, 1) == (3, 4.)
+    @test Ju.get(t, 2) == (3, 4.)
+    @test Ju.get(t, 3) == (3, 4.)
+    @test Ju.get(t, 4) == (3, 4.)
+    @test Ju.get(t, 5) == (1, 2.)
+    @test Ju.get(t, 6) == (1, 2.)
+    @test Ju.get(t, 9) == (2, 3.)
+    @test Ju.get(t, 9) == (2, 3.)
+    @test Ju.get(t, 9) == (2, 3.)
+
+    empty!(t)
+    @test capacity(t) == 3
+    @test length(t) == 0
+
+    push!(t, 1)
+    push!(t, 2)
+    push!(t, 3)
+    @test capacity(t) == 3
+    @test length(t) == 3
+    @test t[1:end] == [1, 2, 3]
+    @test t.first == 2
+    @test t.tree == [6., 4., 2., 3., 1., 2.]
+    @test Ju.get(t, 0) == (3, 3.)
+    @test Ju.get(t, 1) == (3, 3.)
+    @test Ju.get(t, 2) == (3, 3.)
+    @test Ju.get(t, 3) == (3, 3.)
+    @test Ju.get(t, 4) == (1, 1.)
+    @test Ju.get(t, 5) == (2, 2.)
+    @test Ju.get(t, 6) == (2, 2.)
 end
 
 @testset "CircularArrayBuffer" begin

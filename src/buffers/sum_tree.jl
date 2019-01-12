@@ -1,22 +1,83 @@
+import Base:length, size, getindex, get, setindex!, push!, empty!
+import StatsBase:sample
+export capacity
+
 """
     SumTree(capacity::Int)
 
 Efficiently sample and update weights.
 
-Reference:
+For more detals, see the post at [here](https://jaromiru.com/2016/11/07/lets-make-a-dqn-double-learning-and-prioritized-experience-replay/).
 
-- https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.2_Prioritized_Replay_DQN/RL_brain.py#L18-L86
+Here we use a vector to represent the binary tree.
+Suppose we will have `capacity` leaves at most.
+Every time we `push!` new node into the tree, only the recent `capacity` node and their sum will be updated!
+
+[------------Parent nodes------------][--------leaves--------]
+[size: 2^ceil(Int, log2(capacity))-1 ][     size: capacity   ]
 
 # Example
 ```julia
+julia> t = SumTree(8)
+0-element SumTree
+
+julia> for i in 1:16
+       push!(t, i)
+       end
+
+julia> t
+8-element SumTree:
+  9.0
+ 10.0
+ 11.0
+ 12.0
+ 13.0
+ 14.0
+ 15.0
+ 16.0
+
+julia> sample(t)
+(2, 10.0)
+
+julia> sample(t)
+(1, 9.0)
+
+julia> inds, ps = sample(t,100000)
+([8, 4, 8, 1, 5, 2, 2, 7, 6, 6  …  1, 1, 7, 1, 6, 1, 5, 7, 2, 7], [16.0, 12.0, 16.0, 9.0, 13.0, 10.0, 10.0, 15.0, 14.0, 14.0  …  9.0, 9.0, 15.0, 9.0, 14.0, 9.0, 13.0, 15.0, 10.0, 15.0])
+
+julia> countmap(inds)
+Dict{Int64,Int64} with 8 entries:
+  7 => 14991
+  4 => 12019
+  2 => 10003
+  3 => 11027
+  5 => 12971
+  8 => 16052
+  6 => 13952
+  1 => 8985
+
+julia> countmap(ps)
+Dict{Float64,Int64} with 8 entries:
+  9.0  => 8985
+  13.0 => 12971
+  10.0 => 10003
+  14.0 => 13952
+  16.0 => 16052
+  11.0 => 11027
+  15.0 => 14991
+  12.0 => 12019
 ```
 """
 mutable struct SumTree <: AbstractArray{Int, 1}
     capacity::Int
-    length::Int
     first::Int
+    length::Int
+    nparents::Int
     tree::Vector{Float64}
-    SumTree(capacity) = new(capacity, 1, 0, zeros(capacity*2-1))
+    function SumTree(capacity)
+        nparents = 2^ceil(Int, log2(capacity)) - 1
+        new(capacity, 1, 0, nparents, zeros(nparents + capacity))
+    end
 end
 
 capacity(t::SumTree) = t.capacity
@@ -31,12 +92,12 @@ function _index(t::SumTree, i::Int)
     ind
 end
 
-function getindex(t::SumTree, i::Int)
-    t.tree[t.capacity - 1 + _index(t, i)]
-end
+_tree_index(t::SumTree, i) = t.nparents + _index(t, i)
 
-function setindex!(t::SumTree, ind, p)
-    tree_ind = [t.capacity - 1 + _index(t, i)]
+getindex(t::SumTree, i::Int) = t.tree[_tree_index(t, i)]
+
+function setindex!(t::SumTree, p, i)
+    tree_ind = _tree_index(t, i)
     change = p - t.tree[tree_ind]
     t.tree[tree_ind] = p
     while tree_ind != 1
@@ -51,10 +112,18 @@ function push!(t::SumTree, p)
     else
         t.length += 1
     end
-    t::SumTree[t.length] = p
+    t[t.length] = p
 end
 
-function indexof(t::SumTree, v)
+function empty!(t::SumTree)
+    t.length = 0.
+    fill!(t.tree, 0.)
+    # yes, no need to reset `t.first`
+    # so, don't rely on that `t.first` is always 1 after `empty!`
+    t
+end
+
+function get(t::SumTree, v)
     parent_ind = 1
     leaf_ind = parent_ind
     while true
@@ -72,6 +141,20 @@ function indexof(t::SumTree, v)
             end
         end
     end
-    ind = leaf_ind - (t.capacity - 1)
-    ind >= t.first ? ind - t.first + 1 : ind + t.capacity - t.first + 1
+    p = t.tree[leaf_ind]
+    ind = leaf_ind - t.nparents
+    real_ind = ind >= t.first ? ind - t.first + 1 : ind + t.capacity - t.first + 1
+    real_ind, p
+end
+
+sample(t::SumTree) = get(t, rand() * t.tree[1])
+
+function sample(t::SumTree, n::Int)
+    inds, priorities = Vector{Int}(undef, n), Vector{Float64}(undef, n)
+    for i in 1:n
+        ind, p = sample(t)
+        inds[i] = ind
+        priorities[i] = p
+    end
+    inds, priorities
 end
