@@ -445,7 +445,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Components",
     "title": "Ju.CircularSARDBuffer",
     "category": "method",
-    "text": "CircularSARDBuffer(capacity; state_type::Type=Int, action_type::Type=Int, state_size=(), action_size=())\n\ncapacity specifies how many latest turns the buffer will store at most. \n\nnote: Note\nNote that, the length of state and action is 1 step longer in oder to store the state and action in the next step. This is the supposed behavior of SARD buffers.\n\n\n\n\n\n"
+    "text": "CircularSARDBuffer(capacity; state_type::Type=Int, action_type::Type=Int, state_size=(), action_size=())\n\ncapacity specifies how many latest turns the buffer will store at most. \n\nnote: Note\nNote that, the length of state and action is 1 step longer in oder to store the state and action in the next step. This is the supposed behavior of SARD buffers.\n\nSee also: batch_sample\n\n\n\n\n\n"
 },
 
 {
@@ -921,7 +921,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s61,#s62,Tpp} where Tpp<:Function where #s62<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s61<:AbstractLearner,N}}}} where N",
+    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s62,#s63,Tpp} where Tpp<:Function where #s63<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s62<:AbstractLearner,N}}}} where N",
     "page": "Utilities",
     "title": "Ju.train!",
     "category": "method",
@@ -1145,6 +1145,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "utilities/#Ju.batch_sample",
+    "page": "Utilities",
+    "title": "Ju.batch_sample",
+    "category": "function",
+    "text": "sample!(b::CircularSARDBuffer, batch_size::Int)\n\nSample a random batch of States, Actions, Rewards, isDone, nextStates, nextActions without replacement of batch_size.\n\n\n\n\n\n"
+},
+
+{
     "location": "utilities/#Ju.CircularArrayBuffer",
     "page": "Utilities",
     "title": "Ju.CircularArrayBuffer",
@@ -1165,7 +1173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Utilities",
     "title": "Others",
     "category": "section",
-    "text": "CircularArrayBuffer\nTiling"
+    "text": "batch_sample\nCircularArrayBuffer\nTiling"
 },
 
 ]}
