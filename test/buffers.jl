@@ -186,6 +186,7 @@ end
 @testset "CircularTurnBuffer" begin
     @testset "CircularSARDBuffer" begin
         b = CircularSARDBuffer(3)
+        @test eltype(b) == NamedTuple{(:state, :action, :reward, :isdone, :nextstate, :nextaction), Tuple{Int, Int, Float64, Bool, Int, Int}}
         @test length(b) == 0
         @test isfull(b) == false
         @test isempty(b) == true

@@ -78,13 +78,6 @@ function push!(b::CircularSARDBuffer, r, d, ns, na)
     push!(b.action, na)
 end
 
-getindex(b::CircularSARDBuffer, ::Val{:state}, i) = b.state[i]
-getindex(b::CircularSARDBuffer, ::Val{:action}, i) = b.action[i]
-getindex(b::CircularSARDBuffer, ::Val{:reward}, i) = b.reward[i]
-getindex(b::CircularSARDBuffer, ::Val{:isdone}, i) = b.isdone[i]
-getindex(b::CircularSARDBuffer, ::Val{:nextstate}, i) = b.state[i+1]
-getindex(b::CircularSARDBuffer, ::Val{:nextaction}, i) = b.action[i+1]
-
 """
     sample!(b::CircularSARDBuffer, batch_size::Int)
 
