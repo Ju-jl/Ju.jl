@@ -52,6 +52,7 @@ Pages = ["helper_functions.jl"]
 ## Others
 
 ```@docs
+batch_sample
 CircularArrayBuffer
 Tiling
 ```

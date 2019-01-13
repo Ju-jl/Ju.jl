@@ -16,7 +16,10 @@ struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
     end
 end
 
-capacity(b::CircularTurnBuffer) = min(capacity(x) for x in buffers(b))
+length(b::CircularTurnBuffer) = length(b.isdone)
+capacity(b::CircularTurnBuffer) = capacity(b.isdone)
+isfull(b::CircularTurnBuffer) = isfull(b.isdone)
+
 
 ##############################
 # CircularSARDBuffer
@@ -32,6 +35,8 @@ const CircularSARDBuffer = CircularTurnBuffer{SARD}
 
 !!! note
     Note that, the length of state and action is 1 step longer in oder to store the state and action in the next step. This is the supposed behavior of **SARD** buffers.
+
+See also: [`batch_sample`](@ref)
 """
 function CircularSARDBuffer(
     capacity;
@@ -42,6 +47,12 @@ function CircularSARDBuffer(
     CircularSARDBuffer{Tuple{state_type, action_type, Float64, Bool}}(
         (capacity+1, capacity+1, capacity, capacity),
         (state_size, action_size, (), ()))
+end
+
+getindex(b::CircularSARDBuffer, i::Int) = (state=b.state[i], action=b.action[i], reward=b.reward[i], isdone=b.isdone[i], nextstate=b.state[i+1], nextaction=b.action[i+1])
+function eltype(b::CircularSARDBuffer{names, types}) where {names, types}
+    ts, ta, tr, td = types.parameters[2].parameters
+    NamedTuple{SARDSA, Tuple{ts, ta, tr, td, ts, ta}}
 end
 
 function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
@@ -55,9 +66,36 @@ function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta
     push!(b.action, na)
 end
 
-length(b::CircularSARDBuffer) = length(b.isdone)
-capacity(b::CircularSARDBuffer) = capacity(b.isdone)
-isfull(b::CircularSARDBuffer) = isfull(b.isdone)
+function push!(b::CircularSARDBuffer, s, a)
+    push!(b.state, s)
+    push!(b.action, a)
+end
+
+function push!(b::CircularSARDBuffer, r, d, ns, na)
+    push!(b.reward, r)
+    push!(b.isdone, d)
+    push!(b.state, ns)
+    push!(b.action, na)
+end
+
+"""
+    sample!(b::CircularSARDBuffer, batch_size::Int)
+
+Sample a random batch of **S**tates, **A**ctions, **R**ewards, is**D**one,
+next**S**tates, next**A**ctions without replacement of `batch_size`.
+"""
+function batch_sample(b::CircularSARDBuffer, batch_size::Int)
+    inds = rand(1:length(b), batch_size)
+    batch_view(b, inds), inds
+end
+
+function batch_view(b::CircularSARDBuffer, inds)
+    view(b.state, inds),
+    view(b.action, inds),
+    view(b.reward, inds),
+    view(b.isdone, inds),
+    view(b.state, inds .+ 1)
+end
 
 ##############################
 # CircularSARDSBuffer
@@ -83,10 +121,6 @@ function push!(b::CircularSARDSBuffer{Tuple{Ts, Ta, Float64, Bool, Ts}}, s::Ts, 
     push!(b.isdone, d)
     push!(b.nextstate, ns)
 end
-
-length(b::CircularSARDSBuffer) = length(b.isdone)
-capacity(b::CircularSARDSBuffer) = capacity(b.isdone)
-isfull(b::CircularSARDSBuffer) = isfull(b.isdone)
 
 ##############################
 # CircularSARDSABuffer
@@ -114,7 +148,3 @@ function push!(b::CircularSARDSABuffer{Tuple{Ts, Ta, Float64, Bool, Ts, Ta}}, s:
     push!(b.nextstate, ns)
     push!(b.nextaction, na)
 end
-
-length(b::CircularSARDSABuffer) = length(b.isdone)
-capacity(b::CircularSARDSABuffer) = capacity(b.isdone)
-isfull(b::CircularSARDSABuffer) = isfull(b.isdone)

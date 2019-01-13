@@ -38,7 +38,6 @@ const SARDSABuffer = AbstractTurnBuffer{SARDSA}
 
 function isfull end
 function capacity end
-
 buffers(b::AbstractTurnBuffer) = getfield(b, :buffers)
 
 size(b::AbstractTurnBuffer) = (length(b),)
