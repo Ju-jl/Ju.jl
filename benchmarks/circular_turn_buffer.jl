@@ -14,28 +14,28 @@ display(@benchmark push!($buffer, 1.0, false, $(rand(state_size...)), $(rand(act
 
 batch_size = 32
 println("\n", repeat('=', 50))
-println("\n batch_sample buffer (batch_size=$batch_size)\n")
-display(@benchmark batch_sample($buffer, $batch_size))
+println("\n sample buffer (batch_size=$batch_size)\n")
+display(@benchmark sample($buffer, $batch_size))
 
 batch_size = 64
 println("\n", repeat('=', 50))
-println("\n batch_sample buffer (batch_size=$batch_size)\n")
-display(@benchmark batch_sample($buffer, $batch_size))
+println("\n sample buffer (batch_size=$batch_size)\n")
+display(@benchmark sample($buffer, $batch_size))
 
 function sample_N_batches(buffer, N, batch_size)
     for _ in 1:N
-        batch_sample(buffer, batch_size)
+        sample(buffer, batch_size)
     end
 end
 
 N, batch_size = 10, 32
 println("\n", repeat('=', 50))
-println("\n batch_sample buffer (batch_size=$batch_size) $N times\n")
+println("\n sample buffer (batch_size=$batch_size) $N times\n")
 display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 N, batch_size = 10, 64
 println("\n", repeat('=', 50))
-println("\n batch_sample buffer (batch_size=$batch_size) $N times\n")
+println("\n sample buffer (batch_size=$batch_size) $N times\n")
 display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 # ==================================================
@@ -56,7 +56,7 @@ display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 # ==================================================
 
-#  batch_sample buffer (batch_size=32)
+#  sample buffer (batch_size=32)
 
 # BenchmarkTools.Trial:
 #   memory estimate:  3.13 KiB
@@ -72,7 +72,7 @@ display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 # ==================================================
 
-#  batch_sample buffer (batch_size=64)
+#  sample buffer (batch_size=64)
 
 # BenchmarkTools.Trial:
 #   memory estimate:  5.09 KiB
@@ -88,7 +88,7 @@ display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 # ==================================================
 
-#  batch_sample buffer (batch_size=32) 10 times
+#  sample buffer (batch_size=32) 10 times
 
 # BenchmarkTools.Trial:
 #   memory estimate:  30.47 KiB
@@ -104,7 +104,7 @@ display(@benchmark sample_N_batches($buffer, $N, $batch_size))
 
 # ==================================================
 
-#  batch_sample buffer (batch_size=64) 10 times
+#  sample buffer (batch_size=64) 10 times
 
 # BenchmarkTools.Trial:
 #   memory estimate:  50.16 KiB
