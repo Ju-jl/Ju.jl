@@ -19,7 +19,7 @@ function update!(learner::DQN{<:NeuralNetworQ, <:AbstractActionSelector}, buffer
     if length(buffer) > batch_size
         (s, a, r, d, s′), _ = sample(buffer, batch_size)
         s, r, d, s′ = gpu(s), gpu(r), gpu(d), gpu(s′)  
-        a = map(i -> CartesianIndex(i, a[i]), eachindex(a))
+        a = map(i -> CartesianIndex(a[i], i), eachindex(a))  # nactions * batch_size
 
         q, q′ = Q(s, a), Q(s′, Val(:max))
         G = @. r + γ * q′ * (1 - d)
