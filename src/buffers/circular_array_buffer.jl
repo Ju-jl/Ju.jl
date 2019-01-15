@@ -65,7 +65,12 @@ for func in [:view, :getindex]
         $func(cb::CircularArrayBuffer{E, T, 3}, I::Vector{Int}) where {E, T} = $func(cb.buffer, :, :, map(i -> _buffer_index(cb, i), I))
         $func(cb::CircularArrayBuffer{E, T, 4}, I::Vector{Int}) where {E, T} = $func(cb.buffer, :, :, :, map(i -> _buffer_index(cb, i), I))
         $func(cb::CircularArrayBuffer{E, T, N}, I::Vector{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]..., map(i -> _buffer_index(cb, i), I))
-        # $func(cb::CircularArrayBuffer{E, T, N}, i::UnitRange{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]...,  _buffer_index(cb, i))  # TODO: seems not useful?
+
+        $func(cb::CircularArrayBuffer{E, T, 1}, i::UnitRange{Int}) where {E, T} = $func(cb.buffer, _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 2}, i::UnitRange{Int}) where {E, T} = $func(cb.buffer, :,  _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 3}, i::UnitRange{Int}) where {E, T} = $func(cb.buffer, :, :,  _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, 4}, i::UnitRange{Int}) where {E, T} = $func(cb.buffer, :, :, :,  _buffer_index(cb, i))
+        $func(cb::CircularArrayBuffer{E, T, N}, i::UnitRange{Int}) where {E, T, N} = $func(cb.buffer, [(:) for _ in 1 : N-1]...,  _buffer_index(cb, i))
     end
 end
 

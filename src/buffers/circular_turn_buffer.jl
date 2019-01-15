@@ -5,14 +5,17 @@
 Using `CircularArrayBuffer` to store each element specified in `names` and `types`.. The memory of the buffer will be pre-allocated.
 In RL problems, three of the most common `CircularArrayBuffer` based buffers are: [`CircularSARDBuffer`](@ref), [`CircularSARDSBuffer`](@ref), [`CircularSARDSABuffer`](@ref)
 """
-struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
+struct CircularTurnBuffer{names, types, Tbs, Tm} <: AbstractTurnBuffer{names, types}
     buffers::Tbs
+    meta::Tm
     function CircularTurnBuffer{names, types}(
         capacities::NTuple{N, Int},
-        sizes::NTuple{N, NTuple{M, Int} where M}) where {names, types, N}
+        sizes::NTuple{N, NTuple{M, Int} where M};
+        args...) where {names, types, N}
         buffers = merge(NamedTuple(),
                         (names[i], CircularArrayBuffer{types.parameters[i]}(capacities[i], sizes[i]...)) for i in 1:N)
-        new{names, types, typeof(buffers)}(buffers)
+        meta = args.data
+        new{names, types, typeof(buffers), typeof(meta)}(buffers, meta)
     end
 end
 
