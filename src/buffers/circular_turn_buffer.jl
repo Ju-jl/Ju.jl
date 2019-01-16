@@ -59,12 +59,12 @@ function eltype(b::CircularSARDBuffer{names, types}) where {names, types}
 end
 
 function push!(b::CircularSARDBuffer, s, a)
-    if isempty(b) > 0
-        b.state[end] = s
-        b.action[end] = a
-    else
+    if isempty(b)
         push!(b.state, s)
         push!(b.action, a)
+    else
+        b.state[end] = s
+        b.action[end] = a
     end
 end
 

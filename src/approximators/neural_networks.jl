@@ -14,9 +14,14 @@ end
 (Q::NeuralNetworkQ)(s, ::Val{:dist}) = Q.model(s)
 (Q::NeuralNetworkQ)(s) = Q(s, Val(:dist))
 (Q::NeuralNetworkQ)(s, ::Val{:argmax}) = map(i -> i[1], findmax(Q(s).data, dims=1)[2])
-(Q::NeuralNetworkQ)(s, ::Val{:max}) = maximum(Q(s), dims=1)
-(Q::NeuralNetworkQ)(s, a) = Q(s)[a]
-(Q::NeuralNetworkQ)(s, a::Vector{Int}) = Q(s, map(i -> CartesianIndex(a[i], i), eachindex(a)))
+(Q::NeuralNetworkQ)(s, ::Val{:max}) = dropdims(maximum(Q(s), dims=1), dims=1)
+(Q::NeuralNetworkQ)(s, a::Int) = Q(s)[a]
+
+function (Q::NeuralNetworkQ)(s, a::AbstractArray{Int, 1})
+    dist = Q(s)
+    inds = CartesianIndex.(a, axes(dist, 2))
+    dist[inds]
+end
 
 function update!(Q::NeuralNetworkQ, loss)
     Flux.back!(loss)

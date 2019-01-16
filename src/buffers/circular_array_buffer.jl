@@ -74,11 +74,11 @@ for func in [:view, :getindex]
     end
 end
 
-function setindex!(cb::CircularArrayBuffer{E, T, N}, data, i) where {E, T, N}
-    nxt_idx = _buffer_index(cb, i)  # bound check?
-    cb.buffer[cb.stepsize * (nxt_idx - 1) + 1: cb.stepsize * nxt_idx] = data
-    cb
-end
+setindex!(cb::CircularArrayBuffer{E, T, 1}, data, i) where {E, T} = cb.buffer[_buffer_index(cb, i)] = data
+setindex!(cb::CircularArrayBuffer{E, T, 2}, data, i) where {E, T} = cb.buffer[:, _buffer_index(cb, i)] = data
+setindex!(cb::CircularArrayBuffer{E, T, 3}, data, i) where {E, T} = cb.buffer[:, :, _buffer_index(cb, i)] = data
+setindex!(cb::CircularArrayBuffer{E, T, 4}, data, i) where {E, T} = cb.buffer[:, :, :, _buffer_index(cb, i)] = data
+setindex!(cb::CircularArrayBuffer{E, T, N}, data, i) where {E, T, N} = cb.buffer[[(:) for _ in 1 : N-1]..., _buffer_index(cb, i)] = data
 
 ## kept only to show elements
 ## never manually get/set the inner elements because it is very slow
@@ -105,7 +105,9 @@ Make sure that `length(data) == cb.stepsize`
     else
         cb.length += 1
     end
-    cb[end] = data
+    nxt_idx = _buffer_index(cb, cb.length)
+    cb.buffer[cb.stepsize * (nxt_idx - 1) + 1: cb.stepsize * nxt_idx] = data	
+    cb
 end
 
 @inline function push!(cb::CircularArrayBuffer{E, T, 1}, data::T) where {E, T}

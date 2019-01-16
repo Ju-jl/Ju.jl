@@ -165,13 +165,14 @@ end
         for reward in rewards
             reset!(env)
             @test isend(env) == false
+            push!(buffer(agent), 1, 1)
             for r in reward[1:end-1]
-                push!(buffer(agent), 1, 1, r, false, 1, 1)
+                push!(buffer(agent), r, false, 1, 1)
                 cb(env, agent)
             end
             env.state = env.N
             @test isend(env) == true
-            push!(buffer(agent), 1, 1, reward[end], true, 1, 1)
+            push!(buffer(agent), reward[end], true, 1, 1)
             cb(env, agent)
         end
         @test cb() == map(sum, rewards)
