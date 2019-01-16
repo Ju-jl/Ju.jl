@@ -25,7 +25,7 @@ end
 
 
 """
-    (p::EpsilonGreedySelector)(values::AbstractArray)
+    (p::EpsilonGreedySelector)(values::Vector)
 
 !!! note
     If multiple values with the same maximum value are found.
@@ -34,4 +34,6 @@ end
     `NaN` will be filtered unless all the values are `NaN`.
     In that case, a random one will be returned.
 """
-(p::EpsilonGreedySelector)(values)  = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))
+(p::EpsilonGreedySelector)(values::AbstractArray{T, 1}) where T = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))
+
+# (p::EpsilonGreedySelector)(values::AbstractArray{T, 2}) where T = rand() > p.ϵ ? [x[1] for x in argmax(values, dims=1)] : rand(1:size(values, 1), size(values, 2))

@@ -26,36 +26,14 @@ const EpisodeSARDBuffer = EpisodeTurnBuffer{SARD}
 
 EpisodeSARDBuffer(;state_type::Type=Int, action_type::Type=Int) = EpisodeSARDBuffer{Tuple{state_type, action_type, Float64, Bool}}()
 
-function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
-    if isempty(b)
-        push!(b.state, s)
-        push!(b.action, a)
-    elseif isfull(b)
-        empty!(b)
-        push!(b.state, s)
-        push!(b.action, a)
-    end
-    push!(b.reward, r)
-    push!(b.isdone, d)
-    push!(b.state, ns)
-    push!(b.action, na)
-end
-
 "only valid when buffer is empty"
 function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta) where {Ts, Ta}
-    if isempty(b)
-        push!(b.state, s)
-        push!(b.action, a)
-    end
+    !isempty(b) && empty!(b)
+    push!(b.state, s)
+    push!(b.action, a)
 end
 
 function push!(b::EpisodeSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
-    if isfull(b)
-        s, a = b.state[end], b.action[end]
-        empty!(b)
-        push!(b.state, s)
-        push!(b.action, a)
-    end
     push!(b.reward, r)
     push!(b.isdone, d)
     push!(b.state, ns)

@@ -19,6 +19,6 @@ end
 (Q::NeuralNetworkQ)(s, a::Vector{Int}) = Q(s, map(i -> CartesianIndex(a[i], i), eachindex(a)))
 
 function update!(Q::NeuralNetworkQ, loss)
-    back!(loss)
+    Flux.back!(loss)
     Flux.Optimise.update!(Q.opt, Q.ps)
 end

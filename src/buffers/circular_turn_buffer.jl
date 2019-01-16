@@ -58,20 +58,14 @@ function eltype(b::CircularSARDBuffer{names, types}) where {names, types}
     NamedTuple{SARDSA, Tuple{ts, ta, tr, td, ts, ta}}
 end
 
-function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
-    if isempty(b)
+function push!(b::CircularSARDBuffer, s, a)
+    if isempty(b) > 0
+        b.state[end] = s
+        b.action[end] = a
+    else
         push!(b.state, s)
         push!(b.action, a)
     end
-    push!(b.reward, r)
-    push!(b.isdone, d)
-    push!(b.state, ns)
-    push!(b.action, na)
-end
-
-function push!(b::CircularSARDBuffer, s, a)
-    push!(b.state, s)
-    push!(b.action, a)
 end
 
 function push!(b::CircularSARDBuffer, r, d, ns, na)

@@ -1,7 +1,7 @@
 export AbstractTurnBuffer, SARD, SARDSA, SARDBuffer, SARDSABuffer,
        isfull, capacity, buffers, empty!
 
-import Base: size, getindex, length, push!, eltype, view,
+import Base: size, getindex, setindex!, length, push!, eltype, view,
              empty!, isempty, getproperty, lastindex
 
 import DataStructures:isfull, capacity

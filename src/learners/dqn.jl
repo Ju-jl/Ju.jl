@@ -7,6 +7,7 @@ struct DQN{Tn<:NeuralNetworkQ, Tp<:PolicyOrSelector} <: AbstractModelFreeLearner
     π::Tp
     γ::Float64
     batch_size::Int
+    DQN(Q::TQ, π::Tp; γ=0.99, batch_size=32) where {TQ, Tp} = new{TQ, Tp}(Q, π, γ, batch_size)
 end
 
 (learner::DQN{<:NeuralNetworkQ, <:AbstractActionSelector})(s) = learner.Q(s) |> learner.π

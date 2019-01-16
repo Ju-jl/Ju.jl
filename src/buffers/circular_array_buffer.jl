@@ -74,6 +74,12 @@ for func in [:view, :getindex]
     end
 end
 
+function setindex!(cb::CircularArrayBuffer{E, T, N}, data, i) where {E, T, N}
+    nxt_idx = _buffer_index(cb, i)  # bound check?
+    cb.buffer[cb.stepsize * (nxt_idx - 1) + 1: cb.stepsize * nxt_idx] = data
+    cb
+end
+
 ## kept only to show elements
 ## never manually get/set the inner elements because it is very slow
 ## see https://discourse.julialang.org/t/varargs-performance/13578
@@ -92,16 +98,14 @@ Add an element to the back and overwrite front if full.
 Make sure that `length(data) == cb.stepsize`
 """
 @inline function push!(cb::CircularArrayBuffer{E, T, N}, data::AbstractArray{T}) where {E, T, N}
-    length(data) == cb.stepsize || throw(DimensionMismatch("the length of buffer's stepsize doesn't match the length of data, $(cb.stepsize) != $(length(data))"))
+    # length(data) == cb.stepsize || throw(DimensionMismatch("the length of buffer's stepsize doesn't match the length of data, $(cb.stepsize) != $(length(data))"))
     # if full, increment and overwrite, otherwise push
     if cb.length == capacity(cb)
         cb.first = (cb.first == capacity(cb) ? 1 : cb.first + 1)
     else
         cb.length += 1
     end
-    nxt_idx = _buffer_index(cb, cb.length)
-    cb.buffer[cb.stepsize * (nxt_idx - 1) + 1: cb.stepsize * nxt_idx] = data
-    cb
+    cb[end] = data
 end
 
 @inline function push!(cb::CircularArrayBuffer{E, T, 1}, data::T) where {E, T}
