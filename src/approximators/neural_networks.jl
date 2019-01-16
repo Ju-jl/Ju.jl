@@ -7,7 +7,7 @@ struct NeuralNetworkQ{Tm, To, Tp}  <: AbstractQApproximator{Any, Int}
     function NeuralNetworkQ(model::Tm, opt::To) where {Tm, To}
         m = gpu(model)
         ps = params(m)
-        new{Tm, To, typeof(ps)}(m, opt, ps)
+        new{typeof(m), To, typeof(ps)}(m, opt, ps)
     end
 end
 
