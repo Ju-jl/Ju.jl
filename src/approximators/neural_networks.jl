@@ -11,7 +11,7 @@ struct NeuralNetworkQ{Tm, To, Tp}  <: AbstractQApproximator{Any, Int}
     end
 end
 
-(Q::NeuralNetworkQ)(s, ::Val{:dist}) = Q.model(gpu(s))
+(Q::NeuralNetworkQ)(s, ::Val{:dist}) = Q.model(s)
 (Q::NeuralNetworkQ)(s) = Q(s, Val(:dist))
 (Q::NeuralNetworkQ)(s, ::Val{:argmax}) = map(i -> i[1], findmax(Q(s).data, dims=1)[2])
 (Q::NeuralNetworkQ)(s, ::Val{:max}) = dropdims(maximum(Q(s), dims=1), dims=1)
