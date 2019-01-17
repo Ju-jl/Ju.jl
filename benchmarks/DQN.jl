@@ -1,3 +1,4 @@
+# using CuArrays  # Enable GPU
 using Ju
 using Flux
 using Plots
@@ -33,4 +34,4 @@ function change_epsilon()
 end
 
 callbacks = (stop_at_step(10000), rewards_of_each_episode(), change_epsilon())
-# train!(env, agent;callbacks=callbacks)
+train!(env, agent;callbacks=callbacks)
