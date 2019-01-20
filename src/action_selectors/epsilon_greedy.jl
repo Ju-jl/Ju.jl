@@ -34,4 +34,4 @@ end
     `NaN` will be filtered unless all the values are `NaN`.
     In that case, a random one will be returned.
 """
-(p::EpsilonGreedySelector)(values::AbstractArray{T, 1}) where T = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))
+(p::EpsilonGreedySelector)(values::AbstractArray{<:Number, 1}) = rand() > p.ϵ ? sample(findallmax(values)[2]) : rand(1:length(values))
