@@ -1,4 +1,4 @@
-export incrementer, multiplier, inverse_decay, cached_inverse_decay, sample_avg, cached_sample_avg
+export incrementer, multiplier, inverse_decay, cached_inverse_decay, sample_avg, cached_sample_avg, exp_decay
 
 """
     incrementer(;start=1, step=1)
@@ -146,5 +146,18 @@ function cached_sample_avg()
             cache[k] = sample_avg()
         end
         cache[k](x)
+    end
+end
+
+"""
+    exp_decay(init=1.0, λ=0.1, decay_step=1000, clip=1e-4)
+
+See [Exponential Decay](https://en.wikipedia.org/wiki/Exponential_decay)
+"""
+function exp_decay(;init=1.0, λ=0.1, decay_step=1000, clip=1e-4)
+    i = -1
+    function f()
+        i += 1
+        max(init * exp(- λ * i / decay_step), clip)
     end
 end

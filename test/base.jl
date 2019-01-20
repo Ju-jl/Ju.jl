@@ -89,6 +89,14 @@ end
         @test x(3) == 1 / 4
         @test x(4) == 1
     end
+    @testset "exp_decay" begin
+        init, λ, decay_step, clip = 1.0, 0.5, 2, 0.1
+        f = exp_decay(init=init, λ=λ, decay_step=decay_step, clip=clip)
+        f_real(i) = max(init * exp(-λ*i/decay_step), clip)
+        for i in 0:10
+            @test f() == f_real(i)
+        end
+    end
 end
 
 @testset "callbacks" begin
