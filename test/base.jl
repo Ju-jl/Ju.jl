@@ -45,6 +45,22 @@ using SparseArrays
         states, actions = [1, 2, 3, 4], [2, 2, 2, 2]
         @test collect(reverse_importance_weights(π_target, π_behavior, states, actions)) == [1., 2., 0., 0., 0.]
     end
+    @testset "huber_loss" begin
+        @testset "all linear delta" begin
+            δ = 0.5
+            predictions = [1.5, -1.4, -1.0, 0.0]
+            labels = [0.0, 1.0, 0.0, 1.5]
+            expected = mean(δ .* [1.5, 2.4, 1.0, 1.5]) .- 0.5 .* δ ^2
+            @test expected ≈ huber_loss(labels, predictions;δ=δ)
+        end
+        @testset "all quadratic delta" begin
+            δ = 0.5
+            predictions = [1.5, -1.4, -0.5, 0.0]
+            labels = [1.0, -1.0, 0.0, 0.5]
+            expected = mean(0.5 .* [0.5, 0.4, 0.5, 0.5] .^2)
+            @test expected ≈ huber_loss(labels, predictions;δ=δ)
+        end
+    end
 end
 
 @testset "iterators" begin
