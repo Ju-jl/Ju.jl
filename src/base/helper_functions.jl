@@ -111,3 +111,5 @@ reverse_importance_weights(π, b, states, actions) = Reductions(
     (ρ, (s, a)) -> ρ == 0. ? 0. : ρ * π(s, a) / b(s, a),
     Iterators.reverse(zip(states, actions)),
     (init=1.,))
+
+const is_using_gpu = false
