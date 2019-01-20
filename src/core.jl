@@ -24,7 +24,6 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, 1} where {Tss, Tas},
     while !isstop
         if d
             reset!(env)
-            empty!(buffer(agent))
             s, a = agent(observe(env).observation)
             push!(buffer(agent), s, a)
         end
@@ -82,7 +81,6 @@ function train!(env::AbstractSyncEnvironment{Tss, Tas, N} where {Tss, Tas},
             reset!(env)
             next_role = get_next_role(env)
             for agent in agents
-                empty!(buffer(agent))
                 obs = observe(env, agent.role).observation
                 if agent.role == next_role
                     s, a = agent(obs)

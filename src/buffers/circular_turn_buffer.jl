@@ -5,14 +5,17 @@
 Using `CircularArrayBuffer` to store each element specified in `names` and `types`.. The memory of the buffer will be pre-allocated.
 In RL problems, three of the most common `CircularArrayBuffer` based buffers are: [`CircularSARDBuffer`](@ref), [`CircularSARDSBuffer`](@ref), [`CircularSARDSABuffer`](@ref)
 """
-struct CircularTurnBuffer{names, types, Tbs} <: AbstractTurnBuffer{names, types}
+struct CircularTurnBuffer{names, types, Tbs, Tm} <: AbstractTurnBuffer{names, types}
     buffers::Tbs
+    meta::Tm
     function CircularTurnBuffer{names, types}(
         capacities::NTuple{N, Int},
-        sizes::NTuple{N, NTuple{M, Int} where M}) where {names, types, N}
+        sizes::NTuple{N, NTuple{M, Int} where M};
+        args...) where {names, types, N}
         buffers = merge(NamedTuple(),
                         (names[i], CircularArrayBuffer{types.parameters[i]}(capacities[i], sizes[i]...)) for i in 1:N)
-        new{names, types, typeof(buffers)}(buffers)
+        meta = args.data
+        new{names, types, typeof(buffers), typeof(meta)}(buffers, meta)
     end
 end
 
@@ -55,20 +58,14 @@ function eltype(b::CircularSARDBuffer{names, types}) where {names, types}
     NamedTuple{SARDSA, Tuple{ts, ta, tr, td, ts, ta}}
 end
 
-function push!(b::CircularSARDBuffer{Tuple{Ts, Ta, Float64, Bool}}, s::Ts, a::Ta, r::Float64, d::Bool, ns::Ts, na::Ta) where {Ts, Ta}
+function push!(b::CircularSARDBuffer, s, a)
     if isempty(b)
         push!(b.state, s)
         push!(b.action, a)
+    else
+        b.state[end] = s
+        b.action[end] = a
     end
-    push!(b.reward, r)
-    push!(b.isdone, d)
-    push!(b.state, ns)
-    push!(b.action, na)
-end
-
-function push!(b::CircularSARDBuffer, s, a)
-    push!(b.state, s)
-    push!(b.action, a)
 end
 
 function push!(b::CircularSARDBuffer, r, d, ns, na)

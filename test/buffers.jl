@@ -198,15 +198,15 @@ end
         @test isfull(b) == false
         @test isempty(b) == false
         
-        push!(b, 2, 2, 2., false, 3, 3)
-        push!(b, 3, 3, 3., false, 4, 4)
+        push!(b, 2., false, 3, 3)
+        push!(b, 3., false, 4, 4)
         @test length(b) == 3
         @test isfull(b) == true
         @test isempty(b) == false
         @test b[1] == (state=1, action=1, reward=1., isdone=false, nextstate=2, nextaction=2)
         @test b[end] == (state=3, action=3, reward=3., isdone=false, nextstate=4, nextaction=4)
 
-        push!(b, 4, 4, 4., false, 5, 5)
+        push!(b, 4., false, 5, 5)
         @test length(b) == 3
         @test isfull(b) == true
         @test b[1] == (state=2, action=2, reward=2., isdone=false, nextstate=3, nextaction=3)
@@ -219,31 +219,39 @@ end
         @test isempty(b) == true
         @test capacity(b) == 3
 
-        push!(b, [1 1; 1 1], 1, 1., false, [2 2; 2 2], 2)
+        push!(b, [1 1; 1 1], 1)
+        push!(b, 1., false, [2 2; 2 2], 2)
         @test length(b) == 1
         @test isfull(b) == false
         @test isempty(b) == false
         
-        push!(b, [2 2; 2 2], 2, 2., false, [3 3; 3 3], 3)
-        push!(b, [3 3; 3 3], 3, 3., false, [4 4; 4 4], 4)
+        push!(b, 2., false, [3 3; 3 3], 3)
+        push!(b, 3., false, [4 4; 4 4], 4)
         @test length(b) == 3
         @test isfull(b) == true
         @test isempty(b) == false
         @test b[1] == (state=[1 1; 1 1], action=1, reward=1., isdone=false, nextstate=[2 2; 2 2], nextaction=2)
         @test b[end] == (state=[3 3; 3 3], action=3, reward=3., isdone=false, nextstate=[4 4; 4 4], nextaction=4)
 
-        push!(b, [4 4; 4 4], 4, 4., false, [5 5; 5 5], 5)
+        push!(b, 4., true, [5 5; 5 5], 5)
         @test length(b) == 3
         @test isfull(b) == true
         @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false, nextstate=[3 3; 3 3], nextaction=3)
-        @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=false, nextstate=[5 5; 5 5], nextaction=5)
+        @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=true, nextstate=[5 5; 5 5], nextaction=5)
+
+        # now push a new state-action
+        push!(b, [6 6; 6 6], 6)
+        @test length(b) == 3
+        @test isfull(b) == true
+        @test b[1] == (state=[2 2; 2 2], action=2, reward=2., isdone=false, nextstate=[3 3; 3 3], nextaction=3)
+        @test b[end] == (state=[4 4; 4 4], action=4, reward=4., isdone=true, nextstate=[6 6; 6 6], nextaction=6)
 
         batch_inds = [3, 2, 1]
         batch_state = reshape([4 4 4 4 3 3 3 3 2 2 2 2], 2, 2, 3)
         batch_action = [4, 3, 2]
         batch_reward = [4., 3., 2.]
-        batch_isdone = [false, false, false]
-        batch_nextstate = reshape([5 5 5 5 4 4 4 4 3 3 3 3], 2, 2, 3)
+        batch_isdone = [true, false, false]
+        batch_nextstate = reshape([6 6 6 6 4 4 4 4 3 3 3 3], 2, 2, 3)
         @test Ju.batch_view(b, batch_inds) == (batch_state, batch_action, batch_reward, batch_isdone, batch_nextstate)
     end
     @testset "CircularSARDSBuffer" begin
@@ -304,13 +312,14 @@ end
 
         # we can also push a turn infor together, 
         # notice that state and action will be iginored
-        push!(b, 2, 2, 2., true, 3, 3)  
+        push!(b, 2., true, 3, 3)  
         @test length(b) == 2
         @test isfull(b) == true
         @test isempty(b) == false
         @test b[end] == (state=2, action=2, reward=2., isdone=true)
 
-        push!(b, 3, 3, 3., false, 4, 4)
+        push!(b, 3, 3)
+        push!(b, 3., false, 4, 4)
         @test length(b) == 1
         @test isfull(b) == false
         @test isempty(b) == false
