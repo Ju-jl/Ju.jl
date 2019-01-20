@@ -825,11 +825,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "components/#Ju.EpsilonGreedySelector-Tuple{Any}",
+    "location": "components/#Ju.EpsilonGreedySelector-Tuple{AbstractArray{#s14,1} where #s14<:Number}",
     "page": "Components",
     "title": "Ju.EpsilonGreedySelector",
     "category": "method",
-    "text": "(p::EpsilonGreedySelector)(values::AbstractArray)\n\nnote: Note\nIf multiple values with the same maximum value are found. Then a random one will be returned!NaN will be filtered unless all the values are NaN. In that case, a random one will be returned.\n\n\n\n\n\n"
+    "text": "(p::EpsilonGreedySelector)(values::AbstractArray{T, 1}) where T\n\nnote: Note\nIf multiple values with the same maximum value are found. Then a random one will be returned!NaN will be filtered unless all the values are NaN. In that case, a random one will be returned.\n\n\n\n\n\n"
 },
 
 {
@@ -921,7 +921,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s62,#s63,Tpp} where Tpp<:Function where #s63<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s62<:AbstractLearner,N}}}} where N",
+    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s64,#s65,Tpp} where Tpp<:Function where #s65<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s64<:AbstractLearner,N}}}} where N",
     "page": "Utilities",
     "title": "Ju.train!",
     "category": "method",
