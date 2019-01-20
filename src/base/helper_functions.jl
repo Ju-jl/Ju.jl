@@ -1,8 +1,9 @@
 export findallmax, deletefirst!, onehot,
        discounted_reward, reverse_discounted_rewards,
-       importance_weight, reverse_importance_weights
+       importance_weight, reverse_importance_weights, huber_loss
 
 using SparseArrays
+using StatsBase:mean
 
 """
     findallmax(A::AbstractArray)
@@ -113,3 +114,16 @@ reverse_importance_weights(π, b, states, actions) = Reductions(
     (init=1.,))
 
 const is_using_gpu = false
+
+"""
+    huber_loss(labels, predictions;δ = 1.0)
+
+See [huber_loss](https://en.m.wikipedia.org/wiki/Huber_loss)
+and the [implementation](https://github.com/tensorflow/tensorflow/blob/r1.12/tensorflow/python/ops/losses/losses_impl.py#L394-L469) in TensorFlow.
+"""
+function huber_loss(labels, predictions;δ = 1.0)
+    abs_error = abs.(predictions .- labels)
+    quadratic = min.(abs_error, δ)
+    linear = abs_error .- quadratic
+    mean(0.5 .* quadratic .* quadratic .+ δ .* linear)
+end

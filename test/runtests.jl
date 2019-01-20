@@ -1,6 +1,7 @@
 using Test
 using Ju
 using Random:seed!
+using StatsBase:mean
 
 @testset "Ju" begin
 
