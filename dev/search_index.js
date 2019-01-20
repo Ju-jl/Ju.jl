@@ -821,11 +821,11 @@ var documenterSearchIndex = {"docs": [
     "page": "Components",
     "title": "Ju.EpsilonGreedySelector",
     "category": "type",
-    "text": "EpsilonGreedySelector <: AbstractActionSelector\nEpsilonGreedySelector(ϵ)\n\nThe best action is selected for a proportion 1 - epsilon and a random action (with uniform probability) is selected for a proportion epsilon.\n\nExample\n\njulia> selector = EpsilonGreedySelector(0.1)\nEpsilonGreedySelector(0.1)\n\njulia> countmap(selector([1,2,1,1]) for _ in 1:1000)\nDict{Any,Int64} with 4 entries:\n  4 => 37\n  2 => 915\n  3 => 22\n  1 => 26\n\n\n\n\n\n"
+    "text": "EpsilonGreedySelector <: AbstractActionSelector\nEpsilonGreedySelector(ϵ)\n\nThe best action is selected for a proportion 1 - epsilon and a random action (with uniform probability) is selected for a proportion epsilon. ϵ can also be a decay. See the following examples.\n\nExample\n\njulia> selector = EpsilonGreedySelector(0.1)\nEpsilonGreedySelector(0.1)\n\njulia> countmap(selector([1,2,1,1]) for _ in 1:1000)\nDict{Any,Int64} with 4 entries:\n  4 => 37\n  2 => 915\n  3 => 22\n  1 => 26\n\njulia> ϵ = expdecay(init=1.0, λ=1.0, decaystep=500, clip=0.1) (::getfield(Ju, Symbol(\"#f#34\")){Float64,Float64,Int64,Float64}) (generic function with 1 method)\n\njulia> selector = EpsilonGreedySelector(ϵ) EpsilonGreedySelector{getfield(Ju, Symbol(\"#f#34\")){Float64,Float64,Int64,Float64}}(getfield(Ju, Symbol(\"#f#34\")){Float64,Float64,Int64,Float64}(1.0, 1.0, 500, 0.1, Core.Box(-1)))\n\njulia> countmap(selector([1,2,1,1]) for _ in 1:1000) Dict{Any,Int64} with 4 entries:   4 => 101   2 => 677   3 => 106   1 => 116\n\n\n\n\n\n"
 },
 
 {
-    "location": "components/#Ju.EpsilonGreedySelector-Tuple{AbstractArray{#s14,1} where #s14<:Number}",
+    "location": "components/#Ju.EpsilonGreedySelector-Tuple{AbstractArray{#s15,1} where #s15<:Number}",
     "page": "Components",
     "title": "Ju.EpsilonGreedySelector",
     "category": "method",
@@ -921,7 +921,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s64,#s65,Tpp} where Tpp<:Function where #s65<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s64<:AbstractLearner,N}}}} where N",
+    "location": "utilities/#Ju.train!-Union{Tuple{N}, Tuple{AbstractSyncEnvironment{Tss,Tas,N} where Tas where Tss,Tuple{Vararg{Agent{#s66,#s67,Tpp} where Tpp<:Function where #s67<:(AbstractTurnBuffer{(:state, :action, :reward, :isdone),types} where types) where #s66<:AbstractLearner,N}}}} where N",
     "page": "Utilities",
     "title": "Ju.train!",
     "category": "method",
@@ -1006,6 +1006,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Ju.cached_sample_avg",
     "category": "method",
     "text": "cached_sample_avg()\n\nExample\n\njulia> f = cached_sample_avg();\n\njulia> f(:a, 3)  # cache :a\n3.0\n\njulia> f(:a, 5)  # calculate avg value of  :a (3 + 5) / 2\n4.0\n\njulia> f(:a, 8)  # calculate avg value of  :a (3 + 5 + 8) /3\n5.333333333333333\n\njulia> f(:b, 0)  # cache another value\n0.0\n\n\n\n\n\n"
+},
+
+{
+    "location": "utilities/#Ju.exp_decay-Tuple{}",
+    "page": "Utilities",
+    "title": "Ju.exp_decay",
+    "category": "method",
+    "text": "exp_decay(init=1.0, λ=0.1, decay_step=1000, clip=1e-4)\n\nSee Exponential Decay\n\n\n\n\n\n"
 },
 
 {
