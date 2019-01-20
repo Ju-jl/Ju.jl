@@ -1113,6 +1113,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "utilities/#Ju.huber_loss-Tuple{Any,Any}",
+    "page": "Utilities",
+    "title": "Ju.huber_loss",
+    "category": "method",
+    "text": "huber_loss(labels, predictions;δ = 1.0)\n\nSee huber_loss and the implementation in TensorFlow.\n\n\n\n\n\n"
+},
+
+{
     "location": "utilities/#Ju.importance_weight-NTuple{4,Any}",
     "page": "Utilities",
     "title": "Ju.importance_weight",
