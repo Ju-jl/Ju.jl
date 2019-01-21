@@ -7,6 +7,7 @@ makedocs(
     sitename = "Ju.jl",
     format = Documenter.HTML(),
     assets = ["assets/favicon.ico"],
+    analytics = "UA-132847825-1",
     modules = [Ju],
     pages = [
         "Home" => "index.md",
