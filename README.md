@@ -11,7 +11,7 @@
 
 </div>
 
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://github.com/orgs/Ju-jl/projects/1)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Ju-jl/Ju.jl/issues)
 [![BuildStatus](https://travis-ci.org/Ju-jl/Ju.jl.svg?branch=master)](https://travis-ci.org/Ju-jl/Ju.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://ju-jl.github.io/Ju.jl/stable/)
