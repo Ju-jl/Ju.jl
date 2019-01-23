@@ -34,3 +34,15 @@ function update!(learner::DQN{<:NeuralNetworkQ, <:AbstractActionSelector}, buffe
         # update!(π, s, Q(s, Val(:argmax)))  # π isa AbstractPolicy
     end
 end
+
+##############################
+# Double DQN
+##############################
+
+struct DoubleDQN{Ta<:DQN, Tt<:DQN, Tp<:AbstractActionSelector} <: AbstractModelFreeLearner
+    action_model::Ta
+    target_model::Tt
+    action_selector::Tp
+    update_period::Int
+    target_update_period::Int
+end
