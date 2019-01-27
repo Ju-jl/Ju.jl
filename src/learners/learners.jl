@@ -3,7 +3,7 @@ export QLearner,
        MonteCarloLearner, MonteCarloExploringStartLearner, OffPolicyMonteCarloLearner,
        TDLearner, OffPolicyTDLearner, DoubleLearner, QLearner, DifferentialTDLearner, TDλReturnLearner,
        ReinforceLearner,  ReinforceBaselineLearner,
-       DQN
+       DQN, DoubleDQN
 
 include("gradient_bandit_learner.jl")
 include("monte_carlo_learner.jl")
