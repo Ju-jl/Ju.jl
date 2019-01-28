@@ -825,7 +825,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "components/#Ju.EpsilonGreedySelector-Tuple{AbstractArray{#s15,1} where #s15<:Number}",
+    "location": "components/#Ju.EpsilonGreedySelector-Tuple{Any}",
     "page": "Components",
     "title": "Ju.EpsilonGreedySelector",
     "category": "method",
