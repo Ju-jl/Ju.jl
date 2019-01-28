@@ -49,6 +49,8 @@ _epsilon_select(values, ϵ) = rand() > ϵ ? sample(findallmax(values)[2]) : rand
     `NaN` will be filtered unless all the values are `NaN`.
     In that case, a random one will be returned.
 """
-(p::EpsilonGreedySelector{Float64})(values::AbstractArray{<:Number, 1}) = _epsilon_select(values, p.ϵ)
+(p::EpsilonGreedySelector{Float64})(values) = _epsilon_select(values, p.ϵ)
 
-(p::EpsilonGreedySelector{<:Function})(values::AbstractArray{<:Number, 1}) = _epsilon_select(values, p.ϵ())
+(p::EpsilonGreedySelector{<:Function})(values) = _epsilon_select(values, p.ϵ())
+
+# TODO: add `dims` argument to support higher dimension?
