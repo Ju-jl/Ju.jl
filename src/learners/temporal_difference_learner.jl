@@ -283,12 +283,12 @@ function update!(learner::DoubleLearner{<:OffPolicyTDLearner{<:AbstractQApproxim
     end
 
     if !buffer.isdone[end]
-        update!(L1.Q, s, a, L1.α * (r + L1.γ * L2.Q(s′, L1.Q(s′, Val(:argmax))) - L1.Q(s, a)))
+        update!(L1.approximator, s, a, L1.α * (r + L1.γ * L2.approximator(s′, L1.approximator(s′, Val(:argmax))) - L1.approximator(s, a)))
     else
-        update!(L1.Q, s, a, L1.α * (r - L1.Q(s, a)))
+        update!(L1.approximator, s, a, L1.α * (r - L1.approximator(s, a)))
     end
 
-    update!(L1.π_target, s, L1.Q(s, Val(:argmax)))
+    update!(L1.π_target, s, L1.approximator(s, Val(:argmax)))
 end
 
 """
